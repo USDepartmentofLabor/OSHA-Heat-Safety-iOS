@@ -11,7 +11,7 @@
 
 @implementation SecondaryView
 
-@synthesize webView;
+@synthesize webView, testLabel;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -21,6 +21,8 @@
     return self;
 }
 
+NSURL *pageURL;
+
 -(IBAction)doneHandler { 
     NSLog(@"[doneHandler]");
     [self.view removeFromSuperview];
@@ -28,11 +30,21 @@
 
 - (void)displayPage:(NSString *)theURL {
     
+    testLabel.text = @"helloooo!";
+    NSLog(@"label text is: %@", testLabel.text);
+    
     NSString *path = [[NSBundle mainBundle] pathForResource:theURL ofType:@"htm" inDirectory:[Language getLocalizedString:@"HTML_PATH"]];
-    NSURL *url = [NSURL fileURLWithPath:path];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    [webView loadRequest:request];
-    webView.delegate = self;
+//    NSURL *url = [NSURL fileURLWithPath:path];
+    pageURL = [NSURL fileURLWithPath:path];
+//    NSURL *goog = [NSURL URLWithString:@"http://www.google.com"];
+//    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+//    NSLog(@"URL is: %@", request);
+    
+//    [webView loadRequest:request];
+//    webView.delegate = self;
+    
+    NSLog(@"%@", self.webView);
+    
 }
 
 #pragma mark UIWebViewDelegate Methods
@@ -47,6 +59,9 @@
     
     NSString *theTitle=[webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     [self setTitle:theTitle];
+    NSURLRequest *requestPage = [NSURLRequest requestWithURL:pageURL];
+    
+    [self.webView loadRequest:requestPage];
 }
 
 - (void)webView:(UIWebView *)wv didFailLoadWithError:(NSError *)error {
@@ -80,6 +95,23 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    testLabel.text = @"helloooo!";
+    NSLog(@"label text is: %@", testLabel.text);
+
+    if (!webView) {
+        NSLog(@"it's nil!");
+       // NSURL *url = [NSURL fileURLWithPath:pageURL];
+        NSURLRequest *request = [NSURLRequest requestWithURL:pageURL];
+        [webView loadRequest:request];
+        NSLog(@"URL2 is: %@", request);
+ 
+    } else {
+        NSLog(@"not nil!");
+        NSURLRequest *request = [NSURLRequest requestWithURL:pageURL];
+        [webView loadRequest:request];
+        NSLog(@"URL2 is: %@", request);
+    }
     // Do any additional setup after loading the view from its nib.
 }
 

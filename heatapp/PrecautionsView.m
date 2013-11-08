@@ -13,7 +13,7 @@
 @implementation PrecautionsView
 
 @synthesize webView, heatIndexVal, savedHeatIndexVal;
-@synthesize riskLevelLabel, heatIndexLabel, heatIndexValue, heatIndexCatLabel, noaaTime;
+@synthesize riskLevelLabel, heatIndexLabel, heatIndexValue, heatIndexCatLabel, noaaTime, heatIndexCategory, precautionsPageURL;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -28,7 +28,7 @@
     [self.view removeFromSuperview];
 }
 
-- (void)displayPage:(NSString *)theURL:(NSString *)heatIndex:(NSString *)heatIndexCat {
+- (void)displayPage:(NSString *)theURL withHeatIndex:(NSString *)heatIndex andHeatIndexCat:(NSString *)heatIndexCat {
     
     NSLog(@"[displayPage] heatIndex: %@", heatIndex);
     NSLog(@" - theURL: %@", theURL);
@@ -41,11 +41,15 @@
     } else {
         heatIndexVal = heatIndex;
         savedHeatIndexVal = heatIndex;
+        heatIndexCategory = heatIndexCat;
     }
     
     // set heat index
-    heatIndexValue.text = heatIndex;
-    
+//    heatIndexValue.text = heatIndex;
+    NSLog(@"Setting displayed heat index value.  Was: %@, changing it to: %@", heatIndexValue.text, heatIndex);
+    [heatIndexValue setText:heatIndex];
+    NSLog(@"Set displayed heat index value.  Changed it to: %@", heatIndexValue.text);
+   
     /*
      Heat Level colors (rgb)
      -------------------------------
@@ -56,29 +60,10 @@
      -------------------------------
      */
     
-    // Set heat index cat
-    if(heatIndexCat == @"extreme") {
-        heatIndexCatLabel.text = [Language getLocalizedString:@"LVL_EXTREME"];
-        [heatIndexCatLabel setBackgroundColor:[UIColor colorWithRed:254.0/255 green:0/255 blue:0/255 alpha:1]];
-    } else if(heatIndexCat == @"high") {
-        heatIndexCatLabel.text = [Language getLocalizedString:@"LVL_HIGH"];
-        [heatIndexCatLabel setBackgroundColor:[UIColor colorWithRed:247.0/255 green:142.0/255 blue:1.0/255 alpha:1]];
-    } else if(heatIndexCat == @"moderate") {
-        heatIndexCatLabel.text = [Language getLocalizedString:@"LVL_MODERATE"];
-        [heatIndexCatLabel setBackgroundColor:[UIColor colorWithRed:254.0/255 green:211.0/255 blue:156.0/255 alpha:1]];
-    } else if(heatIndexCat == @"lower") {
-        heatIndexCatLabel.text = [Language getLocalizedString:@"LVL_LOWER"];
-        [heatIndexCatLabel setBackgroundColor:[UIColor colorWithRed:255.0/255 green:255.0/255 blue:0/255 alpha:1]];
-    } else {
-        heatIndexCatLabel.text = [Language getLocalizedString:@"LVL_LOWER"];
-        [heatIndexCatLabel setBackgroundColor:[UIColor colorWithRed:255.0/255 green:255.0/255 blue:0/255 alpha:1]];
-    }
     
     NSString *path = [[NSBundle mainBundle] pathForResource:theURL ofType:@"htm" inDirectory:[Language getLocalizedString:@"HTML_PATH"]];
-    NSURL *url = [NSURL fileURLWithPath:path];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    [webView loadRequest:request];
-    webView.delegate = self;
+    precautionsPageURL = [NSURL fileURLWithPath:path];
+   // NSLog(@"URL is: %@", url);
 }
 
 - (void)updateTime:(NSString *)time {
@@ -144,6 +129,33 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    [heatIndexValue setText:heatIndexVal];
+    NSLog(@"Set displayed heat index value.  Changed it to: %@", heatIndexValue.text);
+    
+    
+    // Set heat index cat
+    if([heatIndexCategory  isEqual: @"extreme"]) {
+        heatIndexCatLabel.text = [Language getLocalizedString:@"LVL_EXTREME"];
+        [heatIndexCatLabel setBackgroundColor:[UIColor colorWithRed:254.0/255 green:0/255 blue:0/255 alpha:1]];
+    } else if([heatIndexCategory  isEqual: @"high"]) {
+        heatIndexCatLabel.text = [Language getLocalizedString:@"LVL_HIGH"];
+        [heatIndexCatLabel setBackgroundColor:[UIColor colorWithRed:247.0/255 green:142.0/255 blue:1.0/255 alpha:1]];
+    } else if([heatIndexCategory  isEqual: @"moderate"]) {
+        heatIndexCatLabel.text = [Language getLocalizedString:@"LVL_MODERATE"];
+        [heatIndexCatLabel setBackgroundColor:[UIColor colorWithRed:254.0/255 green:211.0/255 blue:156.0/255 alpha:1]];
+    } else if([heatIndexCategory  isEqual: @"lower"]) {
+        heatIndexCatLabel.text = [Language getLocalizedString:@"LVL_LOWER"];
+        [heatIndexCatLabel setBackgroundColor:[UIColor colorWithRed:255.0/255 green:255.0/255 blue:0/255 alpha:1]];
+    } else {
+        heatIndexCatLabel.text = [Language getLocalizedString:@"LVL_LOWER"];
+        [heatIndexCatLabel setBackgroundColor:[UIColor colorWithRed:255.0/255 green:255.0/255 blue:0/255 alpha:1]];
+    }
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:precautionsPageURL];
+    [webView loadRequest:request];
+    webView.delegate = self;
+
+
     [self redrawApp];
 }
 

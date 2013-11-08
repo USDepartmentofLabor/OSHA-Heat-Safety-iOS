@@ -56,6 +56,7 @@
 		07A346CB14279B620071881C /* moreinfo_more@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07A346C614279B620071881C /* moreinfo_more@2x.png */; };
 		07A346CC14279B620071881C /* moreinfo_signs@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07A346C714279B620071881C /* moreinfo_signs@2x.png */; };
 		07DB0528142BA37800037725 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 07DB052A142BA37800037725 /* InfoPlist.strings */; };
+		3DD2D7FA17A93CA100E126AF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DD2D7F917A93CA100E126AF /* Images.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -119,6 +120,8 @@
 		07A346C714279B620071881C /* moreinfo_signs@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "moreinfo_signs@2x.png"; path = "Resources/moreinfo_signs@2x.png"; sourceTree = "<group>"; };
 		07DB0529142BA37800037725 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		07DB052B142BA37E00037725 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		3DD2D7F917A93CA100E126AF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "Heat Tool/Images.xcassets"; sourceTree = "<group>"; };
+		3DD2D7FB17A93E1000E126AF /* es */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = es; path = es.lproj/FirstView.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +142,7 @@
 		071D5697141AF77900B8E15E = {
 			isa = PBXGroup;
 			children = (
+				3DD2D7F917A93CA100E126AF /* Images.xcassets */,
 				076813B7141C761C007F3ABD /* iPad */,
 				071D56AC141AF77900B8E15E /* heatapp */,
 				071D56A5141AF77900B8E15E /* Frameworks */,
@@ -283,8 +287,13 @@
 		071D5699141AF77900B8E15E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = PixelBit;
+				TargetAttributes = {
+					071D56A1141AF77900B8E15E = {
+						DevelopmentTeam = FRPCGFXS7Q;
+					};
+				};
 			};
 			buildConfigurationList = 071D569C141AF77900B8E15E /* Build configuration list for PBXProject "Heat Tool" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -324,6 +333,7 @@
 				071D573A141AFADE00B8E15E /* thermometer.png in Resources */,
 				0777EB40141C068A001BAC49 /* SecondaryView.xib in Resources */,
 				0777EB50141C215C001BAC49 /* PrecautionsView.xib in Resources */,
+				3DD2D7FA17A93CA100E126AF /* Images.xcassets in Resources */,
 				0777EB55141C21C2001BAC49 /* MoreInfo.xib in Resources */,
 				0761E268141C5C3500472C13 /* Default.png in Resources */,
 				0761E26B141C5C3900472C13 /* Default@2x.png in Resources */,
@@ -374,6 +384,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				071D56C2141AF77900B8E15E /* en */,
+				3DD2D7FB17A93E1000E126AF /* es */,
 			);
 			name = FirstView.xib;
 			sourceTree = "<group>";
@@ -410,7 +421,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -421,11 +431,12 @@
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = "";
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -434,11 +445,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = "";
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -452,14 +462,17 @@
 		071D56CA141AF77900B8E15E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Matthew Keefe (625EH25TML)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "heatapp/Heat Tool-Prefix.pch";
 				INFOPLIST_FILE = "heatapp/Heat Tool-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "Heat Tool";
-				PROVISIONING_PROFILE = "E8AD7194-F00B-4B8E-BE45-14B3262B2666";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -467,14 +480,17 @@
 		071D56CB141AF77900B8E15E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Matthew Keefe (625EH25TML)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "heatapp/Heat Tool-Prefix.pch";
 				INFOPLIST_FILE = "heatapp/Heat Tool-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "Heat Tool";
-				PROVISIONING_PROFILE = "E8AD7194-F00B-4B8E-BE45-14B3262B2666";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

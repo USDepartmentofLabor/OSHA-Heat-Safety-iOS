@@ -38,8 +38,8 @@
 
 // Heat Index Methods
 - (void)updateHeatLevel:(double)level;
-- (void)calculateHeatIndex:(float)temperature:(float)humidity;
-- (float)getHeatIndex:(float)temp:(float)humidity;
+- (void)calculateHeatIndex:(float)temperature withHumidity:(float)humidity;
+- (float)getHeatIndex:(float)temp withHumidity:(float)humidity;
 - (void)getCurrentHeatIndex;
 - (void)getMaxHeatIndex;
 
@@ -51,7 +51,7 @@
 // UI Methods
 - (void)redrawApp;
 - (void)hideKeyboard;
-- (void)alertBox:(NSString *)title:(NSString *)message:(NSString *)buttonLabel;
+- (void)alertBox:(NSString *)title withMessage:(NSString *)message andLabel:(NSString *)buttonLabel;
 
 //properties
 @property (nonatomic, retain) IBOutlet UIButton *calculateBtn;

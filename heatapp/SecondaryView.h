@@ -10,12 +10,12 @@
 
 @interface SecondaryView : UIViewController <UIWebViewDelegate> {
     IBOutlet UIWebView *webView;
-    
+    IBOutlet UILabel *testLabel;
 }
 
 -(IBAction)doneHandler;
 - (void)displayPage:(NSString *)theURL;
 
-@property (nonatomic, retain) UIWebView *webView;
-
+@property (nonatomic, retain) IBOutlet UIWebView *webView;
+@property (nonatomic, retain) IBOutlet UILabel *testLabel;
 @end

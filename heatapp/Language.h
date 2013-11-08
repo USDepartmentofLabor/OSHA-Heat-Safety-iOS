@@ -1,4 +1,4 @@
-@interface Language
+@interface Language : NSObject 
 
 + (void)initialize;
 + (NSString *)getLanguage;

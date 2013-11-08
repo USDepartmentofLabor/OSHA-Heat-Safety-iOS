@@ -21,10 +21,12 @@
 
 - (void)redrawApp;
 - (void)updateTime:(NSString *)time;
-- (void)displayPage:(NSString *)theURL:(NSString *)heatIndex:(NSString *)heatIndexCat;
+- (void)displayPage:(NSString *)theURL withHeatIndex:(NSString *)heatIndex andHeatIndexCat:(NSString *)heatIndexCat;
 
 @property (nonatomic, retain) NSString *heatIndexVal;
 @property (nonatomic, retain) NSString *savedHeatIndexVal;
+@property (nonatomic, retain) NSString *heatIndexCategory;
+@property (nonatomic, retain) NSURL *precautionsPageURL;
 @property (nonatomic, retain) UIWebView *webView;
 
 @property (nonatomic, retain) IBOutlet UILabel *riskLevelLabel;

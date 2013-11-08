@@ -88,15 +88,15 @@
     label = (UILabel *)[cell viewWithTag:0];
     label.text = title;
     
-    if(title == @"Signs and Symptoms" || title == @"Signos y Síntomas") {
+    if([title  isEqualToString:@"Signs and Symptoms"] || [title isEqualToString:@"Signos y Síntomas"]) {
         cell.imageView.image = [UIImage imageNamed:@"moreinfo_signs.png"];
-    } else if(title == @"First Aid" || title == @"Primeros Auxilios") {
+    } else if([title  isEqualToString:@"First Aid"] || [title isEqualToString:@"Primeros Auxilios"]) {
         cell.imageView.image = [UIImage imageNamed:@"moreinfo_firstAid.png"];
-    } else if(title == @"More Detail" || title == @"Más Detalles") {
+    } else if([title isEqualToString:@"More Detail"] || [title  isEqual: @"Más Detalles"]) {
         cell.imageView.image = [UIImage imageNamed:@"moreinfo_more.png"];
-    } else if(title == @"Contact OSHA" || title == @"Contacte a OSHA") {
+    } else if([title  isEqualToString:@"Contact OSHA"] || [title isEqualToString:@"Contacte a OSHA"]) {
         cell.imageView.image = [UIImage imageNamed:@"moreinfo_contact.png"];
-    } else if(title == @"About This App" || title == @"Sobre la aplicación") {
+    } else if([title  isEqualToString:@"About This App"] || [title isEqualToString:@"Sobre la aplicación" ]) {
         cell.imageView.image = [UIImage imageNamed:@"moreinfo_about.png"];
     }
     
@@ -116,15 +116,15 @@
     
     NSString *title = [tableRows objectAtIndex:indexPath.row];
     
-    if(title == @"Signs and Symptoms" || title == @"Signos y Síntomas") {
+    if([title  isEqualToString:@"Signs and Symptoms"] || [title isEqualToString:@"Signos y Síntomas"]) {
         [subView displayPage:@"Signs and Symptoms"];
-    } else if(title == @"First Aid" || title == @"Primeros Auxilios") {
+    } else if([title isEqualToString:@"First Aid"] || [title  isEqualToString:@"Primeros Auxilios"]) {
         [subView displayPage:@"First Aid"];
-    } else if(title == @"More Detail" || title == @"Más Detalles") {
+    } else if([title  isEqualToString:@"More Detail"] || [title isEqualToString:@"Más Detalles"]) {
         [subView displayPage:@"More Detail"];
-    } else if(title == @"Contact OSHA" || title == @"Contacte a OSHA") {
+    } else if([title  isEqualToString:@"Contact OSHA"] || [title isEqualToString:@"Contacte a OSHA"]) {
         [subView displayPage:@"Contact OSHA"];
-    } else if(title == @"About This App" || title == @"Sobre la aplicación") {
+    } else if([title isEqualToString:@"About This App"] || [title  isEqualToString:@"Sobre la aplicación"]) {
         [subView displayPage:@"About This App"];
     }
     

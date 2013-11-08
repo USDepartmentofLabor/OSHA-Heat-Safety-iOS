@@ -39,8 +39,7 @@ NSInteger min;
 // NOAA data
 NSInteger noaaHour;
 NSString *noaaAMPM = nil;
-NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to NOAA Web Site). To use service, contact www.noaa.gov>
-";
+NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to NOAA Web Site). To use service, contact www.noaa.gov>";
 
 - (void)didReceiveMemoryWarning
 {
@@ -84,9 +83,9 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
     curLat = newLocation.coordinate.latitude;
     curLon = newLocation.coordinate.longitude;
     
-    if(currentMode == @"getMax") {
+    if([currentMode isEqualToString:@"getMax"]) {
         [self getMaxHeatIndex];
-    } else if(currentMode == @"getCurrent") {
+    } else if([currentMode isEqualToString:@"getCurrent"]) {
         [self getCurrentHeatIndex];
     } else {
         // do nothing
@@ -102,16 +101,16 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
         curLat = 42.46;
         curLon = -71.25;
         
-        if(currentMode == @"getMax") {
+        if([currentMode isEqualToString:@"getMax"]) {
             [self getMaxHeatIndex];
-        } else if(currentMode == @"getCurrent") {
+        } else if([currentMode isEqualToString:@"getCurrent"]) {
             [self getCurrentHeatIndex];
         }
         
         return;
         
     } else {
-        [self alertBox:[Language getLocalizedString:@"NOTIFICATION"]:[Language getLocalizedString:@"NO_GPS"]:[Language getLocalizedString:@"OK"]];
+        [self alertBox:[Language getLocalizedString:@"NOTIFICATION"] withMessage:[Language getLocalizedString:@"NO_GPS"] andLabel:[Language getLocalizedString:@"OK"]];
     }
     [self.locationManager stopUpdatingLocation];
 }
@@ -186,20 +185,20 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
     //[subView release];
     
     // set risk level, used all over the app
-    if(heatLevel == @"extreme") {
-        [subView displayPage:@"precautions_veryhigh":tmpHeatIndex:@"extreme"];
-    } else if(heatLevel == @"high") {
-        [subView displayPage:@"precautions_high":tmpHeatIndex:@"high"];
-    } else if(heatLevel == @"moderate") {
-        [subView displayPage:@"precautions_moderate":tmpHeatIndex:@"moderate"];
-    } else if(heatLevel == @"lower") {
-        [subView displayPage:@"precautions_lower":tmpHeatIndex:@"lower"];
+    if([heatLevel isEqualToString:@"extreme"]) {
+        [subView displayPage:@"precautions_veryhigh" withHeatIndex:tmpHeatIndex andHeatIndexCat:@"extrme"];
+    } else if([heatLevel isEqualToString:@"high"]) {
+        [subView displayPage:@"precautions_high" withHeatIndex:tmpHeatIndex andHeatIndexCat:@"high"];
+    } else if([heatLevel isEqualToString:@"moderate"]) {
+        [subView displayPage:@"precautions_moderate" withHeatIndex:tmpHeatIndex andHeatIndexCat:@"moderate"];
+    } else if([heatLevel isEqualToString:@"lower"]) {
+        [subView displayPage:@"precautions_lower" withHeatIndex:tmpHeatIndex andHeatIndexCat:@"lower"];
     } else {
-        [subView displayPage:@"precautions_lower":tmpHeatIndex:@"lower"];
+        [subView displayPage:@"precautions_lower" withHeatIndex:tmpHeatIndex andHeatIndexCat:@"lower"];
     }
     
-    if(noaaTime.text != @"") {
-        [subView updateTime:noaaTime.text];
+    if(![noaaTime.text isEqualToString:@""]) {
+       [subView updateTime:noaaTime.text];
     }
 }
 
@@ -211,7 +210,7 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
     
     temperature = [temperatureField.text floatValue];
     humidity = [humidityField.text floatValue];
-    [self calculateHeatIndex:temperature:humidity];
+    [self calculateHeatIndex:temperature withHumidity:humidity];
 }
 
 #pragma mark - Heat Index Methods
@@ -246,16 +245,16 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
      */
     
     // set risk level, used all over the app
-    if(heatLevel == @"extreme") {
+    if([heatLevel isEqualToString:@"extreme"]) {
         riskLevelValue.text = [Language getLocalizedString:@"LVL_EXTREME"];
         [riskLevelValue setBackgroundColor:[UIColor colorWithRed:254.0/255 green:0/255 blue:0/255 alpha:1]];
-    } else if(heatLevel == @"high") {
+    } else if([heatLevel isEqualToString:@"high"]) {
         riskLevelValue.text = [Language getLocalizedString:@"LVL_HIGH"];
         [riskLevelValue setBackgroundColor:[UIColor colorWithRed:247.0/255 green:142.0/255 blue:1.0/255 alpha:1]];
-    } else if(heatLevel == @"moderate") {
+    } else if([heatLevel isEqualToString:@"moderate"]) {
         riskLevelValue.text = [Language getLocalizedString:@"LVL_MODERATE"];
         [riskLevelValue setBackgroundColor:[UIColor colorWithRed:254.0/255 green:211.0/255 blue:156.0/255 alpha:1]];
-    } else if(heatLevel == @"lower") {
+    } else if([heatLevel isEqualToString:@"lower"]) {
         riskLevelValue.text = [Language getLocalizedString:@"LVL_LOWER"];
         [riskLevelValue setBackgroundColor:[UIColor colorWithRed:255.0/255 green:255.0/255 blue:0/255 alpha:1]];
     } else {
@@ -264,7 +263,7 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
     }
 }
 
-- (void)calculateHeatIndex:(float)temperature:(float)humidity {
+- (void)calculateHeatIndex:(float)temperature withHumidity:(float)humidity {
     NSLog(@"[calculateHeatIndex] temperature: %f, humidity: %f", temperature, humidity);
     
     BOOL errors = FALSE;
@@ -273,26 +272,26 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
     humidityField.text = [NSString stringWithFormat:@"%.1f", humidity];
     
     if(temperature == 0 && humidity == 0) {
-        [self alertBox:[Language getLocalizedString:@"ERROR"]:[Language getLocalizedString:@"ALERT_TEMP_EMPTY"]:[Language getLocalizedString:@"OK"]];
+        [self alertBox:[Language getLocalizedString:@"ERROR"] withMessage:[Language getLocalizedString:@"ALERT_TEMP_EMPTY"] andLabel:[Language getLocalizedString:@"OK"]];
         errors = TRUE;
     } else if(temperature == 0) {
-        [self alertBox:[Language getLocalizedString:@"ERROR"]:[Language getLocalizedString:@"ALERT_TEMP_EMPTY"]:[Language getLocalizedString:@"OK"]];
+        [self alertBox:[Language getLocalizedString:@"ERROR"] withMessage:[Language getLocalizedString:@"ALERT_TEMP_EMPTY"] andLabel:[Language getLocalizedString:@"OK"]];
         errors = TRUE;
     } else if(humidity == 0) {
-        [self alertBox:[Language getLocalizedString:@"ERROR"]:[Language getLocalizedString:@"ALERT_HUMID_EMPTY"]:[Language getLocalizedString:@"OK"]];
+        [self alertBox:[Language getLocalizedString:@"ERROR"] withMessage:[Language getLocalizedString:@"ALERT_HUMID_EMPTY"] andLabel:[Language getLocalizedString:@"OK"]];
         errors = TRUE;
     }
     
     if(temperature > 0 && humidity > 0) {
         if(temperature < 80) {
-            [self alertBox:[Language getLocalizedString:@"ALERT"]:[Language getLocalizedString:@"TEMP_UNDER_80"]:[Language getLocalizedString:@"OK"]];
+            [self alertBox:[Language getLocalizedString:@"ALERT"] withMessage:[Language getLocalizedString:@"TEMP_UNDER_80"] andLabel:[Language getLocalizedString:@"OK"]];
             errors = TRUE;
         } else if(humidity > 100) {
-            [self alertBox:[Language getLocalizedString:@"ALERT"]:[Language getLocalizedString:@"HUMID_OVER_100"]:[Language getLocalizedString:@"OK"]];
+            [self alertBox:[Language getLocalizedString:@"ALERT"] withMessage:[Language getLocalizedString:@"HUMID_OVER_100"] andLabel:[Language getLocalizedString:@"OK"]];
             errors = TRUE;
         }
         
-        [self updateHeatLevel:[self getHeatIndex:temperature:humidity]];
+        [self updateHeatLevel:[self getHeatIndex:temperature withHumidity:humidity]];
         precautionsBtn.enabled = true;
         
         if(errors) {
@@ -304,7 +303,7 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
     }
 }
 
-- (float)getHeatIndex:(float)temp:(float)humidity {
+- (float)getHeatIndex:(float)temp withHumidity:(float)humidity {
     
     NSLog(@"[getHeatIndex] temp: %f, humidity: %f", temp, humidity);
     
@@ -352,7 +351,7 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
             noaaAMPM = ampm;
             noaaTime.text = [NSString stringWithFormat:[Language getLocalizedString:@"NOAA_TIME"], noaaHour, noaaAMPM];
             
-            [self calculateHeatIndex:temperature:humidity];
+            [self calculateHeatIndex:temperature withHumidity:humidity];
             break;
         }
     }
@@ -374,7 +373,7 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
             NSLog(@"getMaxHeatIndex - Hour %d", tmpHour);
             float temperature = [[_temperature objectAtIndex:[obj integerValue]] floatValue];
             float humidity = [[_humidity objectAtIndex:[obj integerValue]] floatValue];
-            tmpHeatIndex = [self getHeatIndex:temperature:humidity];
+            tmpHeatIndex = [self getHeatIndex:temperature withHumidity:humidity];
             if(tmpHeatIndex > tmpMaxHeatIndex)
             {
                 tmpMaxHeatIndex = tmpHeatIndex;
@@ -407,7 +406,7 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
     
     NSLog(@"tmpMaxHeatIndex: %f", tmpMaxHeatIndex);
     //[self updateHeatLevel:tmpMaxHeatIndex];
-    [self calculateHeatIndex:tmpTemperature:tmpHumidity];
+    [self calculateHeatIndex:tmpTemperature withHumidity:tmpHumidity];
 }
 
 #pragma mark - NOAA Methods
@@ -435,7 +434,7 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
     NSDictionary *_tempDict = [_xmlDictionary retrieveForPath:[NSString stringWithFormat:@"dwml.data.parameters.temperature.%d", 0]];
     
     if(_tempDict == nil) {
-        [self alertBox:[Language getLocalizedString:@"NOTICE"]:[Language getLocalizedString:@"NOAA_UNAVAILABLE"]:[Language getLocalizedString:@"OK"]];
+        [self alertBox:[Language getLocalizedString:@"NOTICE"] withMessage:[Language getLocalizedString:@"NOAA_UNAVAILABLE"] andLabel:[Language getLocalizedString:@"OK"]];
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         return;
     }
@@ -444,7 +443,7 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
     _temperature = [NSMutableArray arrayWithArray:[_temp2 objectAtIndex:0]];
     
     // get humidity data (ex: 84)
-    NSDictionary *_humidityDict = [_xmlDictionary retrieveForPath:[NSString stringWithFormat:@"dwml.data.parameters.humidity", 0]];
+    NSDictionary *_humidityDict = [_xmlDictionary retrieveForPath:[NSString stringWithFormat:@"dwml.data.parameters.humidity", nil]];
     NSMutableArray *_humidity2 = [NSMutableArray arrayWithArray:[_humidityDict allValues]];
     _humidity = [NSMutableArray arrayWithArray:[_humidity2 objectAtIndex:0]];
     
@@ -499,13 +498,13 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
     [riskLevelLabel setText:[Language getLocalizedString:@"RISK_LEVEL"]];
     
     if(heatLevel != nil) {
-        if(heatLevel == @"extreme") {
+        if([heatLevel isEqualToString:@"extreme"]) {
             riskLevelValue.text = [Language getLocalizedString:@"LVL_EXTREME"];
-        } else if(heatLevel == @"high") {
+        } else if([heatLevel isEqualToString:@"high"]) {
             riskLevelValue.text = [Language getLocalizedString:@"LVL_HIGH"];
-        } else if(heatLevel == @"moderate") {
+        } else if([heatLevel isEqualToString:@"moderate"]) {
             riskLevelValue.text = [Language getLocalizedString:@"LVL_MODERATE"];
-        } else if(heatLevel == @"lower") {
+        } else if([heatLevel isEqualToString:@"lower"]) {
             riskLevelValue.text = [Language getLocalizedString:@"LVL_LOWER"];
         }
     }
@@ -524,7 +523,7 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
     [humidityField resignFirstResponder];
 }
 
-- (void)alertBox:(NSString *)title:(NSString *)message:(NSString *)buttonLabel {
+- (void)alertBox:(NSString *)title withMessage:(NSString *)message andLabel:(NSString *)buttonLabel {
     NSString *errorTitle = title;
     NSString *errorString = message;
     UIAlertView *errorView = [[UIAlertView alloc] initWithTitle:errorTitle message:errorString delegate:self cancelButtonTitle:nil otherButtonTitles:buttonLabel, nil];
