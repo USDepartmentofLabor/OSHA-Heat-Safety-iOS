@@ -2,35 +2,37 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>369F14FB-990A-4AE7-B469-01483187A2AB</string>
+	<string>6B78A866-CF37-4848-9795-ACB2E85E44F8</string>
 	<key>IDESourceControlProjectName</key>
 	<string>Heat Tool</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>C48A2441-1650-4BAD-ACCE-5E0F5F3BB1C5</key>
-		<string>ssh://github.com//USDepartmentofLabor/OSHA-Heat-Safety-iOS</string>
+		<key>ECBC7611-C219-4C68-A5EE-494CEB49D286</key>
+		<string>ssh://github.com/USDepartmentofLabor/OSHA-Heat-Safety-iOS.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>Heat Tool.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>C48A2441-1650-4BAD-ACCE-5E0F5F3BB1C5</key>
+		<key>ECBC7611-C219-4C68-A5EE-494CEB49D286</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>ssh://github.com//USDepartmentofLabor/OSHA-Heat-Safety-iOS</string>
+	<string>ssh://github.com/USDepartmentofLabor/OSHA-Heat-Safety-iOS.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>C48A2441-1650-4BAD-ACCE-5E0F5F3BB1C5</string>
+	<string>ECBC7611-C219-4C68-A5EE-494CEB49D286</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>C48A2441-1650-4BAD-ACCE-5E0F5F3BB1C5</string>
+			<string>ECBC7611-C219-4C68-A5EE-494CEB49D286</string>
 			<key>IDESourceControlWCCName</key>
 			<string>OSHA-Heat-Safety-iOS</string>
 		</dict>

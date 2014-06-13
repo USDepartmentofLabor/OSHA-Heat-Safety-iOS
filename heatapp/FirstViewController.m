@@ -39,6 +39,7 @@ NSInteger min;
 // NOAA data
 NSInteger noaaHour;
 NSString *noaaAMPM = nil;
+//Ilya 6/13/14 changed generic code to a reverse engineered URL
 NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to NOAA Web Site). To use service, contact www.noaa.gov>";
 
 - (void)didReceiveMemoryWarning
@@ -100,6 +101,7 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
         // default location, for testing.
         curLat = 42.46;
         curLon = -71.25;
+        NSLog(@"Could not determine your location");
         
         if([currentMode isEqualToString:@"getMax"]) {
             [self getMaxHeatIndex];
@@ -183,17 +185,21 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
     [self.navigationController pushViewController:subView animated:YES];
     
     //[subView release];
+    NSLog(@"Heat level: %@", heatLevel);
     
     // set risk level, used all over the app
     if([heatLevel isEqualToString:@"extreme"]) {
-        [subView displayPage:@"precautions_veryhigh" withHeatIndex:tmpHeatIndex andHeatIndexCat:@"extrme"];
+        NSLog(@"EXTREME!");
+        [subView displayPage:@"precautions_veryhigh" withHeatIndex:tmpHeatIndex andHeatIndexCat:@"extreme"];
     } else if([heatLevel isEqualToString:@"high"]) {
         [subView displayPage:@"precautions_high" withHeatIndex:tmpHeatIndex andHeatIndexCat:@"high"];
     } else if([heatLevel isEqualToString:@"moderate"]) {
         [subView displayPage:@"precautions_moderate" withHeatIndex:tmpHeatIndex andHeatIndexCat:@"moderate"];
     } else if([heatLevel isEqualToString:@"lower"]) {
+        NSLog(@"If determined %@ is not equal to extreme, but is lower", heatLevel);
         [subView displayPage:@"precautions_lower" withHeatIndex:tmpHeatIndex andHeatIndexCat:@"lower"];
     } else {
+        NSLog(@"If determined %@ is not equal to extreme", heatLevel);
         [subView displayPage:@"precautions_lower" withHeatIndex:tmpHeatIndex andHeatIndexCat:@"lower"];
     }
     
@@ -370,7 +376,7 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
     for(id obj in validIndexes) {
         NSInteger tmpHour = [[[_time objectAtIndex:[obj integerValue]] substringWithRange:NSMakeRange(11, 2)] integerValue];
         if(tmpHour > hour) {
-            NSLog(@"getMaxHeatIndex - Hour %d", tmpHour);
+            NSLog(@"getMaxHeatIndex - Hour %ld", (long)tmpHour);
             float temperature = [[_temperature objectAtIndex:[obj integerValue]] floatValue];
             float humidity = [[_humidity objectAtIndex:[obj integerValue]] floatValue];
             tmpHeatIndex = [self getHeatIndex:temperature withHumidity:humidity];
@@ -431,7 +437,8 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
     //
     
     // get temperature data (ex: 73)
-    NSDictionary *_tempDict = [_xmlDictionary retrieveForPath:[NSString stringWithFormat:@"dwml.data.parameters.temperature.%d", 0]];
+    //Ilya 6/13/14 changed 0 to 2 to get the hourly instead of the dew point
+    NSDictionary *_tempDict = [_xmlDictionary retrieveForPath:[NSString stringWithFormat:@"dwml.data.parameters.temperature.%d", 2]];
     
     if(_tempDict == nil) {
         [self alertBox:[Language getLocalizedString:@"NOTICE"] withMessage:[Language getLocalizedString:@"NOAA_UNAVAILABLE"] andLabel:[Language getLocalizedString:@"OK"]];
@@ -472,7 +479,7 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
         ++curID;
     }
     
-    NSLog(@"Date %@", [NSString stringWithFormat:@"Day: %d, Hour: %d", day, hour]);
+    NSLog(@"Date %@", [NSString stringWithFormat:@"Day: %ld, Hour: %ld", (long)day, (long)hour]);
     
     //NSLog(@"_time: %@", _time);
     //NSLog(@"_temperature: %@", _temperature);
