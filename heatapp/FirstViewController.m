@@ -452,7 +452,14 @@ NSString *noaaURL = @"<Insert Web service call URL (Weather Web Service Call to 
     // get humidity data (ex: 84)
     NSDictionary *_humidityDict = [_xmlDictionary retrieveForPath:[NSString stringWithFormat:@"dwml.data.parameters.humidity", nil]];
     NSMutableArray *_humidity2 = [NSMutableArray arrayWithArray:[_humidityDict allValues]];
-    _humidity = [NSMutableArray arrayWithArray:[_humidity2 objectAtIndex:0]];
+
+    //Ilya 6/16/14 added try/catch statement to account for 64bit architecture
+    @try {
+        _humidity = [NSMutableArray arrayWithArray:[_humidity2 objectAtIndex:0]];
+    }
+    @catch (NSException * e) {
+        _humidity = [NSMutableArray arrayWithArray:[_humidity2 objectAtIndex:1]];
+    }
     
     // get time data (ex: 2011-08-10T10:00:00-04:00)
     _time = [_xmlDictionary retrieveForPath:@"dwml.data.time-layout.start-valid-time"];
