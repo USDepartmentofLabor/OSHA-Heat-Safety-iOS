@@ -3,7 +3,7 @@
 //  heatapp
 //
 //  Created by mkeefe on 9/9/11.
-//  Copyright 2011 PixelBit. All rights reserved.
+//  
 //
 
 #import "heatappAppDelegate.h"

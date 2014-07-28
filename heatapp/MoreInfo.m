@@ -3,7 +3,7 @@
 //  Heat Tool
 //
 //  Created by mkeefe on 9/10/11.
-//  Copyright 2011 PixelBit. All rights reserved.
+//  
 //
 
 #import "SecondaryView.h"
