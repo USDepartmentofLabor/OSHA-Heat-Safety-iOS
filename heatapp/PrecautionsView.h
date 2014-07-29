@@ -3,7 +3,7 @@
 //  Heat Safety
 //
 //  Created by mkeefe on 8/17/11.
-//  Copyright 2011 PixelBit Inc. All rights reserved.
+//  
 //
 
 #import <UIKit/UIKit.h>

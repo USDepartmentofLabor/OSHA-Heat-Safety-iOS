@@ -3,7 +3,7 @@
 //  Heat Safety
 //
 //  Created by mkeefe on 8/4/11.
-//  Copyright 2011 PixelBit Inc. All rights reserved.
+//  
 //
 
 #import "SecondaryView.h"
