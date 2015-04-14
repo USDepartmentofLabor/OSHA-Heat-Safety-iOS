@@ -1,0 +1,14 @@
+/* 
+  InfoPlist.strings
+  Heat Tool
+
+  Created by E J Kalafarski on 3/31/15.
+  Copyright (c) 2015 OSHA. All rights reserved.
+*/
+
+/* App Name */
+"CFBundleDisplayName" = "Calor";
+
+/* When In Use Usage Description */
+"NSLocationWhenInUseUsageDescription" = "Su ubicación se utiliza para decirle a las condiciones que le rodean.";
+

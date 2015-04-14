@@ -5,36 +5,36 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>6B78A866-CF37-4848-9795-ACB2E85E44F8</string>
+	<string>B802CDE8-49B3-4D6D-A090-1E1774B518F8</string>
 	<key>IDESourceControlProjectName</key>
 	<string>Heat Tool</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>ECBC7611-C219-4C68-A5EE-494CEB49D286</key>
-		<string>ssh://github.com/USDepartmentofLabor/OSHA-Heat-Safety-iOS.git</string>
+		<key>06312B7AE7431104168A4B23393929063BC785B4</key>
+		<string>https://github.com/skeeJay/Heat-Tool.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Heat Tool.xcodeproj/project.xcworkspace</string>
+	<string>Heat Tool.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>ECBC7611-C219-4C68-A5EE-494CEB49D286</key>
+		<key>06312B7AE7431104168A4B23393929063BC785B4</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>ssh://github.com/USDepartmentofLabor/OSHA-Heat-Safety-iOS.git</string>
+	<string>https://github.com/skeeJay/Heat-Tool.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>ECBC7611-C219-4C68-A5EE-494CEB49D286</string>
+	<string>06312B7AE7431104168A4B23393929063BC785B4</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>ECBC7611-C219-4C68-A5EE-494CEB49D286</string>
+			<string>06312B7AE7431104168A4B23393929063BC785B4</string>
 			<key>IDESourceControlWCCName</key>
-			<string>OSHA-Heat-Safety-iOS</string>
+			<string>Heat%20Tool</string>
 		</dict>
 	</array>
 </dict>

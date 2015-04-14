@@ -1,0 +1,30 @@
+
+/* Class = "UITextField"; placeholder = "Manual Data"; ObjectID = "3MA-b7-shL"; */
+"3MA-b7-shL.placeholder" = "Datos Manuales";
+
+/* Class = "UIButton"; normalTitle = "--"; ObjectID = "4wG-r6-Yyj"; */
+"4wG-r6-Yyj.normalTitle" = "--";
+
+/* Class = "UILabel"; text = "Around -:-- --"; ObjectID = "6va-OD-rCb"; */
+"6va-OD-rCb.text" = "A las -:-- --";
+
+/* Class = "UINavigationItem"; title = "Precautions"; ObjectID = "BU0-3k-GCJ"; */
+"BU0-3k-GCJ.title" = "Precauciones";
+
+/* Class = "UINavigationItem"; title = "More Info"; ObjectID = "O71-Wf-rlr"; */
+"O71-Wf-rlr.title" = "Más Info";
+
+/* Class = "UILabel"; text = "Now"; ObjectID = "Wan-YT-Oua"; */
+"Wan-YT-Oua.text" = "Ahora";
+
+/* Class = "UILabel"; text = "Feels Like --º F"; ObjectID = "YbO-MY-bxl"; */
+"YbO-MY-bxl.text" = "Sensación Térmica --º F";
+
+/* Class = "UIButton"; normalTitle = "--"; ObjectID = "ZvQ-km-hdk"; */
+"ZvQ-km-hdk.normalTitle" = "--";
+
+/* Class = "UINavigationItem"; title = "Heat Index"; ObjectID = "l2i-F2-GRk"; */
+"l2i-F2-GRk.title" = "Índice de Calor";
+
+/* Class = "UILabel"; text = "Today’s Max"; ObjectID = "wpU-lh-aUv"; */
+"wpU-lh-aUv.text" = "Máxima de Hoy";
