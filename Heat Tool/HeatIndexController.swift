@@ -101,12 +101,17 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         humidityTextField.rightViewMode = UITextFieldViewMode.Always
         humidityTextField.rightView = humidityLabel
         
+        // Set accessibility labels to text fields
+        locationTextField.accessibilityLabel = NSLocalizedString("Location", comment: "Location Label")
+        temperatureTextField.accessibilityLabel = NSLocalizedString("Temperature", comment: "Temperature Label")
+        humidityTextField.accessibilityLabel = NSLocalizedString("Humidity", comment: "Humidity Label")
+        
         // Set up toolbar with completion button for keyboard
         var doneToolbar: UIToolbar = UIToolbar()
         doneToolbar.barStyle = UIBarStyle.Default
         
         var flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        var done: UIBarButtonItem = UIBarButtonItem(title: "Set", style: UIBarButtonItemStyle.Done, target: self, action: Selector("doneButtonAction"))
+        var done: UIBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Calculate", comment: "Calculate Button"), style: UIBarButtonItemStyle.Done, target: self, action: Selector("doneButtonAction"))
         
         var items = NSMutableArray()
         items.addObject(flexSpace)
