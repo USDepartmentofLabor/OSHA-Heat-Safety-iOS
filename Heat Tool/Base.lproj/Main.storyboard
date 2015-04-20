@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="1Xb-1g-aPx">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="1Xb-1g-aPx">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -253,11 +253,14 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="dolLogo" destination="uBF-sV-MjB" id="iJ1-8u-lyV"/>
                         <outlet property="feelsLikeNow" destination="YbO-MY-bxl" id="8Oe-2x-YAc"/>
                         <outlet property="humidityTextField" destination="JOu-Fc-qWx" id="77J-E5-1nL"/>
                         <outlet property="locationActivityIndicator" destination="v1U-Op-Exk" id="fjE-PP-V4k"/>
                         <outlet property="locationTextField" destination="3MA-b7-shL" id="sQQ-hB-g8Y"/>
+                        <outlet property="moreInfoButton" destination="gGP-nf-t8m" id="5Ra-vz-6GY"/>
                         <outlet property="nowLabel" destination="Wan-YT-Oua" id="Tjk-0O-WWa"/>
+                        <outlet property="oshaLogo" destination="z5q-VB-4kH" id="Cp4-m0-m8K"/>
                         <outlet property="riskButtonNow" destination="4wG-r6-Yyj" id="QNj-e8-3rL"/>
                         <outlet property="searchDisplayController" destination="Fra-f1-6t8" id="918-jt-Y4G"/>
                         <outlet property="temperatureTextField" destination="P6b-iV-Xfk" id="iyb-5E-IC2"/>

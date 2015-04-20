@@ -12,6 +12,9 @@ import CoreLocation
 class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, NSXMLParserDelegate, UITextFieldDelegate {
     
     // Create globals for buttons and labels, so they can be updated with the risk state/background color
+    @IBOutlet weak var oshaLogo: UIBarButtonItem!
+    @IBOutlet weak var dolLogo: UIBarButtonItem!
+    
     @IBOutlet weak var locationTextField: UITextField!
     @IBOutlet weak var locationActivityIndicator: UIActivityIndicatorView!
     
@@ -29,6 +32,8 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
     @IBOutlet weak var todaysMaxLabel: UILabel!
     @IBOutlet weak var todaysMaxRisk: UIButton!
     @IBOutlet weak var todaysMaxTime: UILabel!
+    
+    @IBOutlet weak var moreInfoButton: UIButton!
     
     // Create global for location manager
     var locManager: CLLocationManager!
@@ -101,12 +106,20 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         humidityTextField.rightViewMode = UITextFieldViewMode.Always
         humidityTextField.rightView = humidityLabel
         
+        // Add accessibility labels to buttons and text fields
+        oshaLogo.accessibilityLabel = NSLocalizedString("OSHA", comment: "OSHA Title")
+        dolLogo.accessibilityLabel = NSLocalizedString("Department of Labor", comment: "Department of Labor Title")
+        locationTextField.accessibilityLabel = NSLocalizedString("Location", comment: "Location Label")
+        temperatureTextField.accessibilityLabel = NSLocalizedString("Temperature", comment: "Temperature Label")
+        humidityTextField.accessibilityLabel = NSLocalizedString("Humidity", comment: "Humidity Label")
+        moreInfoButton.accessibilityLabel = NSLocalizedString("More Info", comment: "More Info Title")
+        
         // Set up toolbar with completion button for keyboard
         var doneToolbar: UIToolbar = UIToolbar()
         doneToolbar.barStyle = UIBarStyle.Default
         
         var flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        var done: UIBarButtonItem = UIBarButtonItem(title: "Set", style: UIBarButtonItemStyle.Done, target: self, action: Selector("doneButtonAction"))
+        var done: UIBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Calculate", comment: "Calculate Button"), style: UIBarButtonItemStyle.Done, target: self, action: Selector("doneButtonAction"))
         
         var items = NSMutableArray()
         items.addObject(flexSpace)
