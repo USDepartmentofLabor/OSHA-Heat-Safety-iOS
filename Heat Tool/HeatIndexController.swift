@@ -401,15 +401,15 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
             
             backgroundColor = UIColor(red: 0.94, green: 0.94, blue: 0.94, alpha: 1.0)
             buttonColor = UIColor.blackColor()
-            labelColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3)
-            disabledColor = UIColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 0.2)
+            labelColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.4)
+            disabledColor = UIColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 0.4)
         case 80..<91:
             self.riskLevel = 1
             riskTitleString = NSLocalizedString("Lower Risk (Use Caution)", comment: "Low Risk Title")
             
             backgroundColor = UIColor(red: 1.0, green: 0.9, blue: 0.0, alpha: 1.0)
             buttonColor = UIColor.blackColor()
-            labelColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3)
+            labelColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.5)
             disabledColor = UIColor(red: 0.15, green: 0.15, blue: 0.15, alpha: 0.3)
         case 91..<104:
             self.riskLevel = 2
@@ -417,7 +417,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
             
             backgroundColor = UIColor(red: 1.0, green: 0.675, blue: 0.0, alpha: 1.0)
             buttonColor = UIColor.blackColor()
-            labelColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3)
+            labelColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.5)
             disabledColor = UIColor(red: 0.15, green: 0.15, blue: 0.15, alpha: 0.3)
         case 104..<116:
             self.riskLevel = 3
@@ -425,7 +425,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
             
             backgroundColor = UIColor.orangeColor()
             buttonColor = UIColor.whiteColor()
-            labelColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.6)
+            labelColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.8)
             disabledColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 0.4)
         case 116..<1000:
             self.riskLevel = 4
@@ -433,7 +433,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
             
             backgroundColor = UIColor.redColor()
             buttonColor = UIColor.whiteColor()
-            labelColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.6)
+            labelColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.8)
             disabledColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 0.4)
         default:
             println("default")
@@ -654,18 +654,20 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
             tracker.send(GAIDictionaryBuilder.createEventWithCategory("more-info", action: "tap", label: "open-info", value: nil).build() as [NSObject : AnyObject])
             
             // Set tint color of the incoming more info navigation controller to match the app state
-            var svc = segue.destinationViewController as! UINavigationController
-            switch self.riskLevel {
-            // Deeper gray for minimal state
-            case 0:
-                svc.navigationBar.tintColor = UIColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1.0)
-            // Deeper yellow for low risk state
-            case 1:
-                svc.navigationBar.tintColor = UIColor(red: 1.0, green: 0.775, blue: 0.0, alpha: 1.0)
-            // Use background color for all other states
-            default:
-                svc.navigationBar.tintColor = self.view.backgroundColor
-            }
+            // DISABLED due to accessibility reasons; defaulting to iOS's default blue tint
+            // Would like to bring this back at some point, possibly with a drop shadow like in the Notes app
+//            var svc = segue.destinationViewController as! UINavigationController
+//            switch self.riskLevel {
+//            // Deeper gray for minimal state
+//            case 0:
+//                svc.navigationBar.tintColor = UIColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1.0)
+//            // Deeper yellow for low risk state
+//            case 1:
+//                svc.navigationBar.tintColor = UIColor(red: 1.0, green: 0.775, blue: 0.0, alpha: 1.0)
+//            // Use background color for all other states
+//            default:
+//                svc.navigationBar.tintColor = self.view.backgroundColor
+//            }
         }
     }
     
