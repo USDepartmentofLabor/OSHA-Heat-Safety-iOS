@@ -444,10 +444,10 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         self.riskButtonNow.setTitle(riskTitleString, forState: .Normal)
         if self.locationTextField.text == "" {
             self.nowLabel.text = NSLocalizedString("Calculated", comment: "Calculated Title")
-            self.feelsLikeNow.text = NSLocalizedString("Feels Like", comment: "Feels Like Title") + " \(Int(perceivedTemperature))º F"
+            self.feelsLikeNow.text = NSLocalizedString("Feels Like", comment: "Feels Like Title") + " \(Int(perceivedTemperature))° F"
         } else {
             self.nowLabel.text = NSLocalizedString("Now", comment: "Now Title")
-            self.feelsLikeNow.text = NSLocalizedString("Feels Like", comment: "Feels Like Title") + " \(Int(perceivedTemperature))º F"
+            self.feelsLikeNow.text = NSLocalizedString("Feels Like", comment: "Feels Like Title") + " \(Int(perceivedTemperature))° F"
         }
         
         // Disable current risk precautions button if minimal risk state
