@@ -584,7 +584,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         tracker.send(GAIDictionaryBuilder.createEventWithCategory("osha-logo", action: "tap", label: "open-osha-website", value: nil).build() as [NSObject : AnyObject])
         
         // Open website
-        UIApplication.sharedApplication().openURL(NSURL(string: "https://www.osha.gov")!)
+        UIApplication.sharedApplication().openURL(NSURL(string: "http://www.osha.gov")!)
     }
     
     // Tapping DOL logo opens the DOL website in Safari
