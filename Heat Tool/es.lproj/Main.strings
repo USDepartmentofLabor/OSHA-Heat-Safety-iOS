@@ -17,8 +17,8 @@
 /* Class = "UILabel"; text = "Now"; ObjectID = "Wan-YT-Oua"; */
 "Wan-YT-Oua.text" = "Ahora";
 
-/* Class = "UILabel"; text = "Feels Like --º F"; ObjectID = "YbO-MY-bxl"; */
-"YbO-MY-bxl.text" = "Sensación Térmica --º F";
+/* Class = "UILabel"; text = "Feels Like --° F"; ObjectID = "YbO-MY-bxl"; */
+"YbO-MY-bxl.text" = "Sensación Térmica --° F";
 
 /* Class = "UIButton"; normalTitle = "--"; ObjectID = "ZvQ-km-hdk"; */
 "ZvQ-km-hdk.normalTitle" = "--";
