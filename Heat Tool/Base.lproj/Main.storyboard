@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="1Xb-1g-aPx">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="1Xb-1g-aPx">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -74,14 +74,31 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pK9-rC-nX8">
                                 <rect key="frame" x="150" y="94" width="300" height="100"/>
                                 <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter a Place or ZIP" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3MA-b7-shL">
+                                        <rect key="frame" x="63" y="4" width="174" height="30"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="20" id="Bfg-sX-H3A"/>
+                                            <constraint firstAttribute="width" relation="lessThanOrEqual" constant="280" id="IdQ-Ab-thj"/>
+                                            <constraint firstAttribute="height" constant="24" id="WYN-Tu-UtB"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" returnKeyType="go"/>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="Bfg-sX-H3A"/>
+                                                <exclude reference="WYN-Tu-UtB"/>
+                                            </mask>
+                                        </variation>
+                                    </textField>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="--" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="P6b-iV-Xfk">
-                                        <rect key="frame" x="125" y="38" width="22" height="36"/>
+                                        <rect key="frame" x="112" y="42" width="38" height="36"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="HOa-S5-iHH"/>
                                             <constraint firstAttribute="width" constant="40" id="NSf-8K-7RR"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" weight="light" pointSize="24"/>
+                                        <fontDescription key="fontDescription" type="system" weight="thin" pointSize="48"/>
                                         <textInputTraits key="textInputTraits" keyboardType="numberPad" returnKeyType="done"/>
                                         <variation key="default">
                                             <mask key="constraints">
@@ -90,13 +107,13 @@
                                         </variation>
                                     </textField>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="--" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="JOu-Fc-qWx">
-                                        <rect key="frame" x="153" y="38" width="22" height="36"/>
+                                        <rect key="frame" x="156" y="42" width="38" height="36"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="3Sk-c0-iU4"/>
                                             <constraint firstAttribute="width" constant="40" id="41c-Aa-vRl"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" weight="light" pointSize="24"/>
+                                        <fontDescription key="fontDescription" type="system" weight="thin" pointSize="48"/>
                                         <textInputTraits key="textInputTraits" keyboardType="numberPad" returnKeyType="done"/>
                                         <variation key="default">
                                             <mask key="constraints">
@@ -104,33 +121,16 @@
                                             </mask>
                                         </variation>
                                     </textField>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Manual Data" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3MA-b7-shL">
-                                        <rect key="frame" x="96" y="4" width="108" height="30"/>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="20" id="Bfg-sX-H3A"/>
-                                            <constraint firstAttribute="width" relation="lessThanOrEqual" constant="280" id="IdQ-Ab-thj"/>
-                                            <constraint firstAttribute="height" constant="24" id="WYN-Tu-UtB"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                        <variation key="default">
-                                            <mask key="constraints">
-                                                <exclude reference="Bfg-sX-H3A"/>
-                                                <exclude reference="WYN-Tu-UtB"/>
-                                            </mask>
-                                        </variation>
-                                    </textField>
                                     <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="v1U-Op-Exk">
-                                        <rect key="frame" x="208" y="9" width="20" height="20"/>
+                                        <rect key="frame" x="241" y="9" width="20" height="20"/>
                                     </activityIndicatorView>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="JOu-Fc-qWx" firstAttribute="top" secondItem="v1U-Op-Exk" secondAttribute="bottom" constant="2" id="5It-ab-7Z2"/>
                                     <constraint firstAttribute="centerX" secondItem="P6b-iV-Xfk" secondAttribute="centerX" constant="42" id="7V3-bM-auU"/>
-                                    <constraint firstItem="JOu-Fc-qWx" firstAttribute="leading" secondItem="pK9-rC-nX8" secondAttribute="leading" constant="153" id="C1q-66-0hU"/>
+                                    <constraint firstItem="JOu-Fc-qWx" firstAttribute="leading" secondItem="pK9-rC-nX8" secondAttribute="leading" constant="156" id="C1q-66-0hU"/>
                                     <constraint firstItem="P6b-iV-Xfk" firstAttribute="centerY" secondItem="JOu-Fc-qWx" secondAttribute="centerY" id="CkZ-cO-1iI"/>
-                                    <constraint firstItem="P6b-iV-Xfk" firstAttribute="top" secondItem="3MA-b7-shL" secondAttribute="bottom" constant="4" id="DhS-sd-eJ2"/>
+                                    <constraint firstItem="P6b-iV-Xfk" firstAttribute="top" secondItem="3MA-b7-shL" secondAttribute="bottom" constant="8" id="DhS-sd-eJ2"/>
                                     <constraint firstAttribute="centerX" secondItem="3MA-b7-shL" secondAttribute="centerX" id="KwP-Aa-HlU"/>
                                     <constraint firstAttribute="centerX" secondItem="JOu-Fc-qWx" secondAttribute="centerX" constant="-47" id="Lni-l3-gPp"/>
                                     <constraint firstItem="v1U-Op-Exk" firstAttribute="centerY" secondItem="3MA-b7-shL" secondAttribute="centerY" id="R5j-OU-FBi"/>
@@ -139,7 +139,7 @@
                                     <constraint firstItem="JOu-Fc-qWx" firstAttribute="centerY" secondItem="P6b-iV-Xfk" secondAttribute="centerY" id="VNe-Vo-b5Z"/>
                                     <constraint firstItem="v1U-Op-Exk" firstAttribute="leading" secondItem="3MA-b7-shL" secondAttribute="trailing" constant="4" id="X5I-Vn-xH2"/>
                                     <constraint firstItem="JOu-Fc-qWx" firstAttribute="top" secondItem="3MA-b7-shL" secondAttribute="bottom" constant="4" id="blV-qd-Jsy"/>
-                                    <constraint firstAttribute="trailing" secondItem="P6b-iV-Xfk" secondAttribute="trailing" constant="153" id="cgO-Qw-wd6"/>
+                                    <constraint firstAttribute="trailing" secondItem="P6b-iV-Xfk" secondAttribute="trailing" constant="150" id="cgO-Qw-wd6"/>
                                     <constraint firstAttribute="height" constant="100" id="wVr-Kb-mGQ"/>
                                     <constraint firstAttribute="bottom" secondItem="P6b-iV-Xfk" secondAttribute="bottom" constant="4" id="xU1-ax-N57"/>
                                 </constraints>

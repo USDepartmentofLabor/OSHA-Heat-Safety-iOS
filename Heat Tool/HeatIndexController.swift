@@ -70,14 +70,14 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         // Give rounded corners to custom text fields
         temperatureTextField.layer.cornerRadius = 6.0
         humidityTextField.layer.cornerRadius = 6.0
-        temperatureTextField.layer.borderColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.5).CGColor
-        humidityTextField.layer.borderColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.5).CGColor
-        temperatureTextField.layer.borderWidth = 0.5
-        humidityTextField.layer.borderWidth = 0.5
+//        temperatureTextField.layer.borderColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.5).CGColor
+//        humidityTextField.layer.borderColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.5).CGColor
+//        temperatureTextField.layer.borderWidth = 0.5
+//        humidityTextField.layer.borderWidth = 0.5
         
         // Add icons to left inset of text fields
         locationTextField.leftViewMode = UITextFieldViewMode.Always
-        locationTextField.leftView = UIImageView(image: UIImage(named: "geo")?.imageWithRenderingMode(.AlwaysTemplate))
+        locationTextField.leftView = UIImageView(image: UIImage(named: "location")?.imageWithRenderingMode(.AlwaysTemplate))
         temperatureTextField.leftViewMode = UITextFieldViewMode.Always
         temperatureTextField.leftView = UIImageView(image: UIImage(named: "temperature")?.imageWithRenderingMode(.AlwaysTemplate))
         humidityTextField.leftViewMode = UITextFieldViewMode.Always
@@ -114,7 +114,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         humidityTextField.accessibilityLabel = NSLocalizedString("Humidity", comment: "Humidity Label")
         moreInfoButton.accessibilityLabel = NSLocalizedString("More Info", comment: "More Info Title")
         
-        // Set up toolbar with completion button for keyboard
+        // Set up toolbar with "calculate" button for temperature and humidity keyboard
         var doneToolbar: UIToolbar = UIToolbar()
         doneToolbar.barStyle = UIBarStyle.Default
         
@@ -130,6 +130,20 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         
         self.temperatureTextField.inputAccessoryView = doneToolbar
         self.humidityTextField.inputAccessoryView = doneToolbar
+        
+        // Set up toolbar with "use my location" button for location keyboard
+        var locationToolbar: UIToolbar = UIToolbar()
+        locationToolbar.barStyle = UIBarStyle.Default
+        
+        var useMyLocation: UIBarButtonItem = UIBarButtonItem(title: "Use My Location", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("beginGeolocation"))
+        
+        var locationToolbarItems = NSMutableArray()
+        locationToolbarItems.addObject(useMyLocation)
+        
+        locationToolbar.items = locationToolbarItems as [AnyObject]
+        locationToolbar.sizeToFit()
+        
+        self.locationTextField.inputAccessoryView = locationToolbar
         
         // Set up text input field handlers
         self.temperatureTextField.delegate = self
@@ -160,6 +174,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
             
             // Get current conditions
             self.locationActivityIndicator.startAnimating()
+            self.locationTextField.leftView = UIImageView(image: UIImage(named: "geo")?.imageWithRenderingMode(.AlwaysTemplate))
             manager.startUpdatingLocation()
         }
     }
@@ -500,6 +515,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
             }, completion: nil)
     }
     
+    /*
     func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
         // When location field is tapped
         if textField == locationTextField {
@@ -544,6 +560,43 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
             return true
         }
     }
+    */
+    
+    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+        // When location field is tapped
+        if textField == locationTextField {
+            self.locationTextField.leftView = UIImageView(image: UIImage(named: "location")?.imageWithRenderingMode(.AlwaysTemplate))
+        }
+        return true
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {   //delegate method
+        textField.resignFirstResponder()
+        
+        self.locationActivityIndicator.startAnimating()
+        
+        var geocoder:CLGeocoder = CLGeocoder()
+        geocoder.geocodeAddressString(textField.text, completionHandler: {(placemarks, error) -> Void in
+            if error != nil {
+                println("Error", error)
+            } else if let placemark = placemarks?[0] as? CLPlacemark {
+                var placemark:CLPlacemark = placemarks[0] as! CLPlacemark
+                
+                // Request and parse NOAA API with current coordinates
+                self.times = []
+                self.temperatures = []
+                self.humidities = []
+                
+                // Use current coordinates to input and parse the NOAA API
+                self.parser = NSXMLParser(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=\(placemark.location.coordinate.latitude)&lon=\(placemark.location.coordinate.longitude)&FcstType=digitalDWML")))!
+                
+                self.parser.delegate = self
+                self.parser.parse()
+            }
+        })
+        
+        return true
+    }
     
     // When the done button on the keyboard toolbar is tapped
     func doneButtonAction() {
@@ -575,6 +628,15 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         UIView.animateWithDuration(0.75, delay: 0.0, options: nil, animations: {
             self.todaysMaxContainer.alpha = 0
             }, completion: nil)
+    }
+    
+    // Wrapper to begin locationupdates
+    func beginGeolocation() {
+        self.locationActivityIndicator.startAnimating()
+        self.locationTextField.leftView = UIImageView(image: UIImage(named: "geo")?.imageWithRenderingMode(.AlwaysTemplate))
+        self.locManager.startUpdatingLocation()
+        
+        locationTextField.resignFirstResponder()
     }
     
     // Tapping OSHA logo opens the OSHA website in Safari
