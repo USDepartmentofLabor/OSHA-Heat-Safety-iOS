@@ -19,11 +19,11 @@ class MoreInfoController: UITableViewController {
     
     // Init each option in the table
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier("infoCell") as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("infoCell")!
         
         cell.textLabel!.text = NSLocalizedString(moreInfoItems[indexPath.row], comment: moreInfoItems[indexPath.row] + " Title")
         
-        var imageName = UIImage(named: moreInfoImages[indexPath.row])
+        let imageName = UIImage(named: moreInfoImages[indexPath.row])
         cell.imageView!.layer.masksToBounds = true
         cell.imageView!.layer.cornerRadius = 7.0
         cell.imageView!.image = imageName
@@ -39,7 +39,7 @@ class MoreInfoController: UITableViewController {
     // Load content for the selected web view
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "webViewSegue" {
-            if let indexPath = tableView.indexPathForSelectedRow() {
+            if let indexPath = tableView.indexPathForSelectedRow {
                 let destinationViewController = segue.destinationViewController as! WebViewController
                 destinationViewController.infoContent = moreInfoItems[indexPath.row]
             }

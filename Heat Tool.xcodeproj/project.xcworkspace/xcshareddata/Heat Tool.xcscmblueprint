@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "FEF75672239C28581B79CF2CCF98FDCD14BD1007",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "FEF75672239C28581B79CF2CCF98FDCD14BD1007" : 0,
+    "06312B7AE7431104168A4B23393929063BC785B4" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "B802CDE8-49B3-4D6D-A090-1E1774B518F8",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "FEF75672239C28581B79CF2CCF98FDCD14BD1007" : "OSHA-Heat-Safety-iOS",
+    "06312B7AE7431104168A4B23393929063BC785B4" : "Heat%20Tool"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Heat Tool",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 203,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Heat Tool.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/skeeJay\/Heat-Tool.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "06312B7AE7431104168A4B23393929063BC785B4"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/USDepartmentofLabor\/OSHA-Heat-Safety-iOS.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "FEF75672239C28581B79CF2CCF98FDCD14BD1007"
+    }
+  ]
+}

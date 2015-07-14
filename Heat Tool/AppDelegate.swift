@@ -44,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If the app was in geolocation mode
         if myHeatIndexController?.locationTextField.text != "" && CLLocationManager.authorizationStatus() == CLAuthorizationStatus.AuthorizedWhenInUse {
             // Record GA event
-            var tracker = GAI.sharedInstance().defaultTracker
+            let tracker = GAI.sharedInstance().defaultTracker
             tracker.send(GAIDictionaryBuilder.createEventWithCategory("app", action: "bring-app-to-foreground", label: "get-current-conditions", value: nil).build() as [NSObject : AnyObject])
             
             // Get the latest data
