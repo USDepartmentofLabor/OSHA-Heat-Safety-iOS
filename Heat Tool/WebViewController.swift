@@ -24,12 +24,7 @@ class WebViewController: UIViewController, UIWebViewDelegate {
         
         // Get the contents of the file to load
         let localFilePath = NSBundle.mainBundle().pathForResource(infoContent, ofType: "html")
-        var contents: NSString?
-        do {
-            contents = try NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding)
-        } catch _ {
-            contents = nil
-        }
+        var contents = NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding, error: nil)
         
         // Get the base URL of the file so we can access its resources
         let baseUrl = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)

@@ -21,12 +21,7 @@ class PrecautionsController: UIViewController, UIWebViewDelegate {
         
         // Get the contents of the file to load
         let localFilePath = NSBundle.mainBundle().pathForResource(precautionLevel, ofType: "html")
-        var contents: NSString?
-        do {
-            contents = try NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding)
-        } catch _ {
-            contents = nil
-        }
+        var contents = NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding, error: nil)
         
         // Get the base URL of the file so we can access its resources
         let baseUrl = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
@@ -52,12 +47,7 @@ class PrecautionsController: UIViewController, UIWebViewDelegate {
             // Get contents of the file to load
             let fileName = request.URL?.lastPathComponent?.stringByDeletingPathExtension
             let localFilePath = NSBundle.mainBundle().pathForResource(fileName, ofType: "html")
-            var contents: NSString?
-            do {
-                contents = try NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding)
-            } catch _ {
-                contents = nil
-            }
+            var contents = NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding, error: nil)
             
             // Set the base URL for the web view so we can access resources
             let baseUrl  = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)

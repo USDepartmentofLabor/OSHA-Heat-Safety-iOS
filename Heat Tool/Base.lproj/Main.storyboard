@@ -191,17 +191,17 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="ZvQ-km-hdk">
-                                        <rect key="frame" x="5" y="30" width="180" height="70"/>
+                                        <rect key="frame" x="3" y="30" width="185" height="70"/>
                                         <animations/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="70" id="3WH-KX-9pJ"/>
                                             <constraint firstAttribute="height" constant="75" id="6xp-3U-WG2"/>
                                             <constraint firstAttribute="height" constant="150" id="cUr-g2-fyU"/>
-                                            <constraint firstAttribute="width" constant="180" id="xlX-3I-iah"/>
+                                            <constraint firstAttribute="width" constant="185" id="xlX-3I-iah"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                         <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="30" maxY="0.0"/>
-                                        <inset key="imageEdgeInsets" minX="150" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        <inset key="imageEdgeInsets" minX="155" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         <state key="normal" title="--" image="chevron.png">
                                             <color key="titleColor" white="0.0" alpha="0.40000000000000002" colorSpace="calibratedWhite"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>

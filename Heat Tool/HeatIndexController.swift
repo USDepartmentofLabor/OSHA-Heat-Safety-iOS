@@ -11,6 +11,8 @@ import CoreLocation
 
 class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, NSXMLParserDelegate, UITextFieldDelegate {
     
+    var usingUsersLocation = false
+    
     // Create globals for buttons and labels, so they can be updated with the risk state/background color
     @IBOutlet weak var oshaLogo: UIBarButtonItem!
     @IBOutlet weak var dolLogo: UIBarButtonItem!
@@ -166,6 +168,8 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
             tracker.send(GAIDictionaryBuilder.createEventWithCategory("app", action: "open-app", label: "get-current-conditions", value: nil).build() as [NSObject : AnyObject])
             
             // Get current conditions
+            usingUsersLocation = true
+            
             self.locationActivityIndicator.startAnimating()
             self.locationTextField.leftView = UIImageView(image: UIImage(named: "geo")?.imageWithRenderingMode(.AlwaysTemplate))
             manager.startUpdatingLocation()
@@ -173,7 +177,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
     }
     
     // When the user's location is available
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]){
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [AnyObject]){
         // We don't need it to keep updating, so stop the manager
         locManager.stopUpdatingLocation()
         
@@ -192,14 +196,14 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         parser.parse()
     }
     
-    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [NSObject : AnyObject]) {
         element = elementName
         
         buffer = NSMutableString.alloc()
         buffer = ""
         
         if attributeDict["type"] != nil {
-            if attributeDict["type"] == "hourly" {
+            if attributeDict["type"] as! NSString == "hourly" {
                 inHourlyTemp = true
             }
         }
@@ -209,8 +213,8 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         }
     }
     
-    func parser(parser: NSXMLParser, foundCharacters string: String) {
-        buffer.appendString(string)
+    func parser(parser: NSXMLParser, foundCharacters string: String?) {
+        buffer.appendString(string!)
     }
     
     func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
@@ -370,7 +374,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         }
         
         // Update the interface
-        UIView.animateWithDuration(0.75, delay: 0.0, options: [], animations: {
+        UIView.animateWithDuration(0.75, delay: 0.0, options: nil, animations: {
             // Make sure today's max container is visible
             self.todaysMaxContainer.alpha = 1
             
@@ -386,8 +390,8 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
     
     // Update the risk state/background color of the app
     func updateRiskLevel() {
-        let tempInF = Double(Int(temperatureTextField.text!)!)
-        let humidity = Double(Int(humidityTextField.text!)!)
+        let tempInF = Double(temperatureTextField.text!.toInt()!)
+        let humidity = Double(humidityTextField.text!.toInt()!)
         let perceivedTemperature = calculateHeatIndex(tempInF, humidity: humidity)
         
         var riskTitleString = ""
@@ -476,7 +480,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         self.feelsLikeNow.alpha = self.riskLevel == 0 ? 0 : 1
         
         // Animate certain interface updates
-        UIView.animateWithDuration(0.75, delay: 0.0, options: [], animations: {
+        UIView.animateWithDuration(0.75, delay: 0.0, options: nil, animations: {
             
             // Change background colors
             self.view.backgroundColor = backgroundColor
@@ -502,85 +506,45 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
             }, completion: nil)
     }
     
-    /*
     func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
         // When location field is tapped
         if textField == locationTextField {
-            // If location settings allow, start to get current conditions
-            if CLLocationManager.authorizationStatus() == CLAuthorizationStatus.AuthorizedWhenInUse {
-                // Record GA event
-                var tracker = GAI.sharedInstance().defaultTracker
-                tracker.send(GAIDictionaryBuilder.createEventWithCategory("location-field", action: "tap", label: "get-current-conditions", value: nil).build() as [NSObject : AnyObject])
-                
-                // Get current conditions
-                self.locationActivityIndicator.startAnimating()
-                self.locManager.startUpdatingLocation()
-                // If location settings don't allow, display an alert
-            } else {
-                // Record GA event
-                var tracker = GAI.sharedInstance().defaultTracker
-                tracker.send(GAIDictionaryBuilder.createEventWithCategory("location-field", action: "tap", label: "location-services-disabled-alert", value: nil).build() as [NSObject : AnyObject])
-                
-                let alertController = UIAlertController(
-                    title: NSLocalizedString("Location Services Disabled", comment: "Location Services Title"),
-                    message: NSLocalizedString("To get your local conditions, visit settings to allow the OSHA Heat Safety Tool to use your location when the app is in use.", comment: "Location Services Description"),
-                    preferredStyle: .Alert)
-                
-                // Add a cancel option
-                alertController.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel Title"), style: .Cancel, handler: nil))
-                
-                // Add an option to go to settings
-                alertController.addAction(UIAlertAction(title: NSLocalizedString("Settings", comment: "Settings Title"), style: .Default) { (action) in
-                    if let url = NSURL(string:UIApplicationOpenSettingsURLString) {
-                        UIApplication.sharedApplication().openURL(url)
-                    }
-                    })
-                
-                // Present the alert
-                self.presentViewController(alertController, animated: true, completion: nil)
-            }
+            usingUsersLocation = false
             
-            // Do not allow the text field to be editable
-            return false
-            // For all other text fields, allow editing to begin
-        } else {
-            return true
-        }
-    }
-    */
-    
-    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
-        // When location field is tapped
-        if textField == locationTextField {
             self.locationTextField.leftView = UIImageView(image: UIImage(named: "location")?.imageWithRenderingMode(.AlwaysTemplate))
         }
         return true
     }
     
+    // If the return key on the location field keyboard is pressed
     func textFieldShouldReturn(textField: UITextField) -> Bool {   //delegate method
         textField.resignFirstResponder()
         
-        self.locationActivityIndicator.startAnimating()
-        
-        let geocoder:CLGeocoder = CLGeocoder()
-        geocoder.geocodeAddressString(textField.text!, completionHandler: {(placemarks, error) -> Void in
-            if error != nil {
-                print("Error", error)
-            } else {
-                let placemark:CLPlacemark = placemarks![0]
-                
-                // Request and parse NOAA API with current coordinates
-                self.times = []
-                self.temperatures = []
-                self.humidities = []
-                
-                // Use current coordinates to input and parse the NOAA API
-                self.parser = NSXMLParser(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=\(placemark.location.coordinate.latitude)&lon=\(placemark.location.coordinate.longitude)&FcstType=digitalDWML"))!)!
-                
-                self.parser.delegate = self
-                self.parser.parse()
-            }
-        })
+        // If the location field isn't blank
+        if textField.text != "" {
+            self.locationActivityIndicator.startAnimating()
+            
+            // Geocode the contents of the field
+            let geocoder:CLGeocoder = CLGeocoder()
+            geocoder.geocodeAddressString(textField.text!, completionHandler: {(placemarks, error) -> Void in
+                if error != nil {
+                    print("Error", error)
+                } else {
+                    let placemark:CLPlacemark = placemarks![0] as! CLPlacemark
+                    
+                    // Request and parse NOAA API with current coordinates
+                    self.times = []
+                    self.temperatures = []
+                    self.humidities = []
+                    
+                    // Use current coordinates to input and parse the NOAA API
+                    self.parser = NSXMLParser(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=\(placemark.location.coordinate.latitude)&lon=\(placemark.location.coordinate.longitude)&FcstType=digitalDWML"))!)!
+                    
+                    self.parser.delegate = self
+                    self.parser.parse()
+                }
+            })
+        }
         
         return true
     }
@@ -612,18 +576,51 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         updateRiskLevel()
         
         // Hide "today's max" for user-entered values
-        UIView.animateWithDuration(0.75, delay: 0.0, options: [], animations: {
+        UIView.animateWithDuration(0.75, delay: 0.0, options: nil, animations: {
             self.todaysMaxContainer.alpha = 0
             }, completion: nil)
     }
     
     // Wrapper to begin locationupdates
     func beginGeolocation() {
-        self.locationActivityIndicator.startAnimating()
-        self.locationTextField.leftView = UIImageView(image: UIImage(named: "geo")?.imageWithRenderingMode(.AlwaysTemplate))
-        self.locManager.startUpdatingLocation()
-        
-        locationTextField.resignFirstResponder()
+        // If location settings allow, start to get current conditions
+        if CLLocationManager.authorizationStatus() == CLAuthorizationStatus.AuthorizedWhenInUse {
+            // Record GA event
+            let tracker = GAI.sharedInstance().defaultTracker
+            tracker.send(GAIDictionaryBuilder.createEventWithCategory("location-field", action: "tap", label: "get-current-conditions", value: nil).build() as [NSObject : AnyObject])
+            
+            usingUsersLocation = true
+            
+            self.locationActivityIndicator.startAnimating()
+            self.locationTextField.leftView = UIImageView(image: UIImage(named: "geo")?.imageWithRenderingMode(.AlwaysTemplate))
+            self.locManager.startUpdatingLocation()
+            
+            locationTextField.resignFirstResponder()
+        // If location settings don't allow, display an alert
+        } else {
+            // Record GA event
+            let tracker = GAI.sharedInstance().defaultTracker
+            tracker.send(GAIDictionaryBuilder.createEventWithCategory("location-field", action: "tap", label: "location-services-disabled-alert", value: nil).build() as [NSObject : AnyObject])
+            
+            let alertController = UIAlertController(
+                title: NSLocalizedString("Location Services Disabled", comment: "Location Services Title"),
+                message: NSLocalizedString("To get your local conditions, visit settings to allow the OSHA Heat Safety Tool to use your location when the app is in use.", comment: "Location Services Description"),
+                preferredStyle: .Alert)
+            
+            // Add a cancel option
+            alertController.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel Title"), style: .Cancel, handler: nil))
+            
+            // Add an option to go to settings
+            alertController.addAction(UIAlertAction(title: NSLocalizedString("Settings", comment: "Settings Title"), style: .Default) { (action) in
+                if let url = NSURL(string:UIApplicationOpenSettingsURLString) {
+                    UIApplication.sharedApplication().openURL(url)
+                }
+                })
+            
+            // Present the alert
+            self.presentViewController(alertController, animated: true, completion: nil)
+        }
+
     }
     
     // Tapping OSHA logo opens the OSHA website in Safari
