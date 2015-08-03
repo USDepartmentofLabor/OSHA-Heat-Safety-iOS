@@ -31,6 +31,15 @@ class MoreInfoController: UITableViewController {
         return cell
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Make sure the ugly table cell selection is cleared when returning to this view
+        if (self.tableView.indexPathForSelectedRow() != nil) {
+            self.tableView.deselectRowAtIndexPath(self.tableView.indexPathForSelectedRow()!, animated: false)
+        }
+    }
+    
     // Allow more info view to be closed
     @IBAction func dismissMoreInfo(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: nil)
