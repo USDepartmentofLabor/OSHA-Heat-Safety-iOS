@@ -2,6 +2,9 @@
 Rebuild and redesign of the OSHA Heat Safety Tool in Swift.
 
 ## Analytics
+### Screen View Data Model
+* Heat Index Screen
+
 ### Event Data Model
 Category | Action | Label
 ------------ | ------------- | -------------
