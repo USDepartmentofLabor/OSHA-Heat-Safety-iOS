@@ -8,13 +8,16 @@
 
 import UIKit
 
-class PrecautionsController: UIViewController, UIWebViewDelegate {
+class PrecautionsController: GAITrackedViewController, UIWebViewDelegate {
 
     @IBOutlet weak var webView: UIWebView!
     var precautionLevel = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // View name for Google Analytics
+        self.screenName = "Precautions Screen"
 
         // Do any additional setup after loading the view.
         webView.delegate = self

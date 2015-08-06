@@ -13,6 +13,15 @@ class MoreInfoController: UITableViewController {
     let moreInfoItems = ["Signs and Symptoms","First Aid","More Details","Contact OSHA","About This App"];
     let moreInfoImages = ["moreinfo_signs","moreinfo_firstAid","moreinfo_more","moreinfo_contact","moreinfo_about"];
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Record GA view
+        let tracker = GAI.sharedInstance().defaultTracker
+        tracker.set(kGAIScreenName, value: "More Info Screen")
+        tracker.send(GAIDictionaryBuilder.createAppView().build() as [NSObject : AnyObject])
+    }
+    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return moreInfoItems.count
     }

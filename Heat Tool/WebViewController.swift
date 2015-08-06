@@ -8,13 +8,16 @@
 
 import UIKit
 
-class WebViewController: UIViewController, UIWebViewDelegate {
+class WebViewController: GAITrackedViewController, UIWebViewDelegate {
 
     @IBOutlet weak var webView: UIWebView!
     var infoContent = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // View name for Google Analytics
+        self.screenName = "Info Content Screen"
         
         // Do any additional setup after loading the view.
         webView.delegate = self
