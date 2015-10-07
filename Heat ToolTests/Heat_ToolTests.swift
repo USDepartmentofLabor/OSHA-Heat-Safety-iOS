@@ -3,7 +3,7 @@
 //  Heat ToolTests
 //
 //  Created by E J Kalafarski on 1/14/15.
-//  Copyright (c) 2015 OSHA. All rights reserved.
+//  Code is in the public domain
 //
 
 import UIKit
