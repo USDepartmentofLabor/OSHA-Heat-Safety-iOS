@@ -8,13 +8,16 @@
 
 import UIKit
 
-class WebViewController: UIViewController, UIWebViewDelegate {
+class WebViewController: GAITrackedViewController, UIWebViewDelegate {
 
     @IBOutlet weak var webView: UIWebView!
     var infoContent = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // View name for Google Analytics
+        self.screenName = "Info Content Screen"
         
         // Do any additional setup after loading the view.
         webView.delegate = self
@@ -23,11 +26,11 @@ class WebViewController: UIViewController, UIWebViewDelegate {
         self.title = NSLocalizedString(infoContent, comment: infoContent + " Title")
         
         // Get the contents of the file to load
-        var localFilePath = NSBundle.mainBundle().pathForResource(infoContent, ofType: "html")
+        let localFilePath = NSBundle.mainBundle().pathForResource(infoContent, ofType: "html")
         var contents = NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding, error: nil)
         
         // Get the base URL of the file so we can access its resources
-        var baseUrl = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
+        let baseUrl = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
         
         // Load contents into the webview
         webView.loadHTMLString(contents as! String, baseURL: baseUrl)

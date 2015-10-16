@@ -8,23 +8,26 @@
 
 import UIKit
 
-class PrecautionsController: UIViewController, UIWebViewDelegate {
+class PrecautionsController: GAITrackedViewController, UIWebViewDelegate {
 
     @IBOutlet weak var webView: UIWebView!
     var precautionLevel = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // View name for Google Analytics
+        self.screenName = "Precautions Screen"
 
         // Do any additional setup after loading the view.
         webView.delegate = self
         
         // Get the contents of the file to load
-        var localFilePath = NSBundle.mainBundle().pathForResource(precautionLevel, ofType: "html")
+        let localFilePath = NSBundle.mainBundle().pathForResource(precautionLevel, ofType: "html")
         var contents = NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding, error: nil)
         
         // Get the base URL of the file so we can access its resources
-        var baseUrl = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
+        let baseUrl = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
         
         // Load contents into the webview
         webView.loadHTMLString(contents as! String, baseURL: baseUrl)
@@ -45,12 +48,12 @@ class PrecautionsController: UIViewController, UIWebViewDelegate {
         // If it's a local link
         if nt == UIWebViewNavigationType.LinkClicked {
             // Get contents of the file to load
-            var fileName = request.URL?.lastPathComponent?.stringByDeletingPathExtension
-            var localFilePath = NSBundle.mainBundle().pathForResource(fileName, ofType: "html")
+            let fileName = request.URL?.lastPathComponent?.stringByDeletingPathExtension
+            let localFilePath = NSBundle.mainBundle().pathForResource(fileName, ofType: "html")
             var contents = NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding, error: nil)
             
             // Set the base URL for the web view so we can access resources
-            var baseUrl  = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
+            let baseUrl  = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
             
             // Load contents into the webview
             webView.loadHTMLString(contents as! String, baseURL: baseUrl)

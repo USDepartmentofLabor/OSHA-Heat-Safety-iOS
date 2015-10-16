@@ -42,9 +42,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
         
         // If the app was in geolocation mode
-        if myHeatIndexController?.locationTextField.text != "" && CLLocationManager.authorizationStatus() == CLAuthorizationStatus.AuthorizedWhenInUse {
+        if myHeatIndexController?.usingUsersLocation == true && CLLocationManager.authorizationStatus() == CLAuthorizationStatus.AuthorizedWhenInUse {
             // Record GA event
-            var tracker = GAI.sharedInstance().defaultTracker
+            let tracker = GAI.sharedInstance().defaultTracker
             tracker.send(GAIDictionaryBuilder.createEventWithCategory("app", action: "bring-app-to-foreground", label: "get-current-conditions", value: nil).build() as [NSObject : AnyObject])
             
             // Get the latest data
