@@ -28,7 +28,7 @@ class MoreInfoController: UITableViewController {
     
     // Init each option in the table
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("infoCell")! as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("infoCell")! 
         
         cell.textLabel!.text = NSLocalizedString(moreInfoItems[indexPath.row], comment: moreInfoItems[indexPath.row] + " Title")
         
@@ -44,8 +44,8 @@ class MoreInfoController: UITableViewController {
         super.viewWillAppear(animated)
         
         // Make sure the ugly table cell selection is cleared when returning to this view
-        if (self.tableView.indexPathForSelectedRow() != nil) {
-            self.tableView.deselectRowAtIndexPath(self.tableView.indexPathForSelectedRow()!, animated: false)
+        if (self.tableView.indexPathForSelectedRow! != nil) {
+            self.tableView.deselectRowAtIndexPath(self.tableView.indexPathForSelectedRow!, animated: false)
         }
     }
     
@@ -58,7 +58,7 @@ class MoreInfoController: UITableViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "webViewSegue" {
             let destinationViewController = segue.destinationViewController as! WebViewController
-            destinationViewController.infoContent = moreInfoItems[tableView.indexPathForSelectedRow()!.row]
+            destinationViewController.infoContent = moreInfoItems[tableView.indexPathForSelectedRow!.row]
         }
     }
     

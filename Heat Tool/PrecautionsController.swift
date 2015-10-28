@@ -24,13 +24,19 @@ class PrecautionsController: GAITrackedViewController, UIWebViewDelegate {
         
         // Get the contents of the file to load
         let localFilePath = NSBundle.mainBundle().pathForResource(precautionLevel, ofType: "html")
-        var contents = NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding, error: nil)
+        do {
+            let contents =  try NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding)
+   
+            // Get the base URL of the file so we can access its resources
+            let baseUrl = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
+            
+            // Load contents into the webview
+            webView.loadHTMLString(contents as String, baseURL: baseUrl)
+        } catch {
+            print(error)
+        }
+        //        var contents = NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding, error: nil)
         
-        // Get the base URL of the file so we can access its resources
-        let baseUrl = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
-        
-        // Load contents into the webview
-        webView.loadHTMLString(contents as! String, baseURL: baseUrl)
     }
 
     override func didReceiveMemoryWarning() {
@@ -48,16 +54,24 @@ class PrecautionsController: GAITrackedViewController, UIWebViewDelegate {
         // If it's a local link
         if nt == UIWebViewNavigationType.LinkClicked {
             // Get contents of the file to load
-            let fileName = request.URL?.lastPathComponent?.stringByDeletingPathExtension
-            let localFilePath = NSBundle.mainBundle().pathForResource(fileName, ofType: "html")
-            var contents = NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding, error: nil)
+            // 21/10/15 - Old
+//            let fileName = fileURL.lastPathComponent!.stringByDeletingPathExtension
+            let fileName = request.URL!.URLByDeletingPathExtension
+            let fileURL = fileName?.absoluteString
             
-            // Set the base URL for the web view so we can access resources
-            let baseUrl  = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
+            let localFilePath = NSBundle.mainBundle().pathForResource(fileURL, ofType: "html")
+
+//            var contents = NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding, error: nil)
+            do {
+                let contents = try NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding)
+                // Set the base URL for the web view so we can access resources
+                let baseUrl  = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
             
-            // Load contents into the webview
-            webView.loadHTMLString(contents as! String, baseURL: baseUrl)
-            
+                // Load contents into the webview
+                webView.loadHTMLString(contents as String, baseURL: baseUrl)
+            } catch {
+                print(error)
+            }
             return false
         }
         

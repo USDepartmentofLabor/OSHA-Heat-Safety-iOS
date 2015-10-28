@@ -177,7 +177,29 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
     }
     
     // When the user's location is available
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [AnyObject]){
+    
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        // We don't need it to keep updating, so stop the manager
+        locManager.stopUpdatingLocation()
+        
+        // Request and parse NOAA API with current coordinates
+        times = []
+        temperatures = []
+        humidities = []
+        
+        // Use current coordinates to input and parse the NOAA API
+        parser = NSXMLParser(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=\(locations[locations.count-1].coordinate.latitude)&lon=\(locations[locations.count-1].coordinate.longitude)&FcstType=digitalDWML"))!)!
+        
+        // South Texas, for some nice testing
+        //        parser = NSXMLParser(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=25.902470&lon=-97.418151&FcstType=digitalDWML")))!
+        
+        parser.delegate = self
+        parser.parse()
+
+    }
+
+    // 16/10/2015 - OLD
+    /*   func locationManager(manager: CLLocationManager, didUpdateLocations locations: [AnyObject]){
         // We don't need it to keep updating, so stop the manager
         locManager.stopUpdatingLocation()
         
@@ -194,9 +216,30 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         
         parser.delegate = self
         parser.parse()
+    }*/
+    
+  
+    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+        element = elementName
+        
+        //var buffer = ""
+        //buffer = NSMutableString.alloc()
+      //  buffer = ""
+        
+        if attributeDict["type"] != nil {
+            if attributeDict["type"] == "hourly" {
+                inHourlyTemp = true
+            }
+        }
+        
+        if elementName == "humidity" {
+            inHourlyHumidity = true
+        }
+
     }
     
-    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [NSObject : AnyObject]) {
+    // 16/10/2015 - Old
+/*    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [NSObject : AnyObject]) {
         element = elementName
         
         buffer = NSMutableString.alloc()
@@ -211,10 +254,10 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         if elementName == "humidity" {
             inHourlyHumidity = true
         }
-    }
+    } */
     
-    func parser(parser: NSXMLParser, foundCharacters string: String?) {
-        buffer.appendString(string!)
+    func parser(parser: NSXMLParser, foundCharacters string: String) {
+        buffer.appendString(string)
     }
     
     func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
@@ -297,11 +340,12 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         for index in 0...23 {
             // Get a date object for this hour's time
             let newTime = (times[index] as! NSString).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-            
+            print(" raw time= " + newTime)
             // Get a clean 12-hour readout of this hour's time
             let newDateFormatter = NSDateFormatter()
             newDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZ"
             let newDate = newDateFormatter.dateFromString(newTime)
+           // print("new date = " + newDate)
             newDateFormatter.dateFormat = "h:mm a"
             let newHour = newDateFormatter.stringFromDate(newDate!)
             
@@ -374,7 +418,10 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         }
         
         // Update the interface
-        UIView.animateWithDuration(0.75, delay: 0.0, options: nil, animations: {
+      //  UIView.animateWithDuration(<#T##duration: NSTimeInterval##NSTimeInterval#>, delay: <#T##NSTimeInterval#>, options: <#T##UIViewAnimationOptions#>, animations: <#T##() -> Void#>, completion: <#T##((Bool) -> Void)?##((Bool) -> Void)?##(Bool) -> Void#>)
+        let timeInterval:NSTimeInterval = 0.75
+       // let timeDelay:NSTimeInterval = 0.0
+        UIView.animateWithDuration(timeInterval, animations: {
             // Make sure today's max container is visible
             self.todaysMaxContainer.alpha = 1
             
@@ -385,13 +432,27 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
                 self.todaysMaxRisk.enabled = true
             }
             
-            }, completion: nil)
+        })
+        
+        // 20/10/15 - Old
+     /*   UIView.animateWithDuration(timeInterval, delay: timeDelay, options: nil, animations: {
+            // Make sure today's max container is visible
+            self.todaysMaxContainer.alpha = 1
+            
+            // Disable precautions button if minimal risk state
+            if (self.todaysMaxRisk.titleLabel?.text == NSLocalizedString("Minimal Risk From Heat", comment: "Minimal Risk Title")) {
+                self.todaysMaxRisk.enabled = false
+            } else {
+                self.todaysMaxRisk.enabled = true
+            }
+            
+            }, completion: nil) */
     }
     
     // Update the risk state/background color of the app
     func updateRiskLevel() {
-        let tempInF = Double(temperatureTextField.text!.toInt()!)
-        let humidity = Double(humidityTextField.text!.toInt()!)
+        let tempInF = Double(Int(temperatureTextField.text!)!)
+        let humidity = Double(Int(humidityTextField.text!)!)
         let perceivedTemperature = calculateHeatIndex(tempInF, humidity: humidity)
         
         var riskTitleString = ""
@@ -480,7 +541,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         self.feelsLikeNow.alpha = self.riskLevel == 0 ? 0 : 1
         
         // Animate certain interface updates
-        UIView.animateWithDuration(0.75, delay: 0.0, options: nil, animations: {
+        UIView.animateWithDuration(0.75, animations: {
             
             // Change background colors
             self.view.backgroundColor = backgroundColor
@@ -503,7 +564,32 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
             self.temperatureTextField.textColor = buttonColor
             self.humidityTextField.textColor = buttonColor
             
-            }, completion: nil)
+        })
+        // 20/10/15 - Old
+       /* UIView.animateWithDuration(0.75, delay: 0.0, options: nil, animations: {
+            
+            // Change background colors
+            self.view.backgroundColor = backgroundColor
+            self.navigationController?.navigationBar.barTintColor = backgroundColor
+            
+            // Change label colors
+            self.temperatureLabel.textColor = labelColor
+            self.humidityLabel.textColor = labelColor
+            self.nowLabel.textColor = labelColor
+            self.feelsLikeNow.textColor = labelColor
+            self.todaysMaxLabel.textColor = labelColor
+            self.todaysMaxTime.textColor = labelColor
+            
+            // Change button colors
+            self.view.tintColor = buttonColor
+            self.navigationController?.navigationBar.tintColor = buttonColor
+            self.navigationController?.navigationBar.barStyle = (buttonColor == UIColor.blackColor() ? UIBarStyle.Default : UIBarStyle.Black)
+            self.locationTextField.textColor = buttonColor
+            self.locationActivityIndicator.color = buttonColor
+            self.temperatureTextField.textColor = buttonColor
+            self.humidityTextField.textColor = buttonColor
+            
+            }, completion: nil)*/
     }
     
     func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
@@ -530,7 +616,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
                 if error != nil {
                     print("Error", error)
                 } else {
-                    let placemark:CLPlacemark = placemarks![0] as! CLPlacemark
+                    let placemark:CLPlacemark = placemarks![0] 
                     
                     // Request and parse NOAA API with current coordinates
                     self.times = []
@@ -538,7 +624,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
                     self.humidities = []
                     
                     // Use current coordinates to input and parse the NOAA API
-                    self.parser = NSXMLParser(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=\(placemark.location.coordinate.latitude)&lon=\(placemark.location.coordinate.longitude)&FcstType=digitalDWML"))!)!
+                    self.parser = NSXMLParser(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=\(placemark.location!.coordinate.latitude)&lon=\(placemark.location!.coordinate.longitude)&FcstType=digitalDWML"))!)!
                     
                     self.parser.delegate = self
                     self.parser.parse()
@@ -576,9 +662,13 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         updateRiskLevel()
         
         // Hide "today's max" for user-entered values
-        UIView.animateWithDuration(0.75, delay: 0.0, options: nil, animations: {
+        UIView.animateWithDuration(0.75, animations: {
             self.todaysMaxContainer.alpha = 0
-            }, completion: nil)
+        })
+       // 20/10/15 - Old
+        /* UIView.animateWithDuration(0.75, delay: 0.0, options: nil, animations: {
+            self.todaysMaxContainer.alpha = 0
+            }, completion: nil) */
     }
     
     // Wrapper to begin locationupdates

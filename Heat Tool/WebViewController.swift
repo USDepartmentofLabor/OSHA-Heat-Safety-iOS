@@ -27,13 +27,17 @@ class WebViewController: GAITrackedViewController, UIWebViewDelegate {
         
         // Get the contents of the file to load
         let localFilePath = NSBundle.mainBundle().pathForResource(infoContent, ofType: "html")
-        var contents = NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding, error: nil)
+        do {
+        let contents = try NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding)
         
         // Get the base URL of the file so we can access its resources
         let baseUrl = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
         
         // Load contents into the webview
-        webView.loadHTMLString(contents as! String, baseURL: baseUrl)
+        webView.loadHTMLString(contents as String, baseURL: baseUrl)
+        } catch {
+            print(error)
+        }
     }
 
     override func didReceiveMemoryWarning() {
