@@ -40,16 +40,8 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
     // Create global for location manager
     var locManager: CLLocationManager!
     
-    // Create globals for parser functions
-    var parser = NSXMLParser()
-    var times = NSMutableArray()
-    var temperatures = NSMutableArray()
-    var humidities = NSMutableArray()
-    var elements = NSMutableDictionary()
-    var element = NSString()
-    var buffer = NSMutableString()
-    var inHourlyTemp = false
-    var inHourlyHumidity = false
+    // Create global to contain fetched DWML
+    var xml = SWXMLHash.parse("<xml></xml>")
     
     // Create a global to keep track of risk state/background color
     var riskLevel = 0;
@@ -177,136 +169,41 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
     }
     
     // When the user's location is available
-    
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         // We don't need it to keep updating, so stop the manager
         locManager.stopUpdatingLocation()
         
-        // Request and parse NOAA API with current coordinates
-        times = []
-        temperatures = []
-        humidities = []
-        
-        // Use current coordinates to input and parse the NOAA API
-        parser = NSXMLParser(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=\(locations[locations.count-1].coordinate.latitude)&lon=\(locations[locations.count-1].coordinate.longitude)&FcstType=digitalDWML"))!)!
-        
-        // South Texas, for some nice testing
-        //        parser = NSXMLParser(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=25.902470&lon=-97.418151&FcstType=digitalDWML")))!
-        
-        parser.delegate = self
-        parser.parse()
-
-    }
-
-    // 16/10/2015 - OLD
-    /*   func locationManager(manager: CLLocationManager, didUpdateLocations locations: [AnyObject]){
-        // We don't need it to keep updating, so stop the manager
-        locManager.stopUpdatingLocation()
+        print("http://forecast.weather.gov/MapClick.php?lat=\(locations[locations.count-1].coordinate.latitude)&lon=\(locations[locations.count-1].coordinate.longitude)&FcstType=digitalDWML")
         
         // Request and parse NOAA API with current coordinates
-        times = []
-        temperatures = []
-        humidities = []
+        xml = SWXMLHash.parse(NSData(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=\(locations[locations.count-1].coordinate.latitude)&lon=\(locations[locations.count-1].coordinate.longitude)&FcstType=digitalDWML"))!) ?? NSData())
         
-        // Use current coordinates to input and parse the NOAA API
-        parser = NSXMLParser(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=\(locations[locations.count-1].coordinate.latitude)&lon=\(locations[locations.count-1].coordinate.longitude)&FcstType=digitalDWML"))!)!
-        
-        // South Texas, for some nice testing
-//        parser = NSXMLParser(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=25.902470&lon=-97.418151&FcstType=digitalDWML")))!
-        
-        parser.delegate = self
-        parser.parse()
-    }*/
-    
-  
-    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
-        element = elementName
-        
-        //var buffer = ""
-        //buffer = NSMutableString.alloc()
-      //  buffer = ""
-        
-        if attributeDict["type"] != nil {
-            if attributeDict["type"] == "hourly" {
-                inHourlyTemp = true
-            }
+        // Because the DWML only has a description tag or an area-description tag, only one of the following will succeed
+        if (xml["dwml"]["data"]["location"]["description"]) {
+            self.locationTextField.text = xml["dwml"]["data"]["location"]["description"].element?.text!
+        } else if (xml["dwml"]["data"]["location"]["area-description"]) {
+            self.locationTextField.text = xml["dwml"]["data"]["location"]["area-description"].element?.text!
         }
         
-        if elementName == "humidity" {
-            inHourlyHumidity = true
-        }
+        // Set text field temperature and humidity to the first hour in the forecast
+        self.temperatureTextField.text = xml["dwml"]["data"]["parameters"]["temperature"][0]["value"][0].element?.text!
+        self.humidityTextField.text = xml["dwml"]["data"]["parameters"]["humidity"]["value"][0].element?.text!
+        
+        // Switch temperature and humidity fields to auto-filled styling
+        self.temperatureTextField.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.0)
+        self.humidityTextField.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.0)
+        
+        // Geolocation and parsing are complete
+        self.locationActivityIndicator.stopAnimating()
+        
+        // Update today's max risk from fetched hourly values
+        // N.B. Today's max should be calculated before overall risk level, so that app state styling controlled by overall risk can take it into account
+        self.updateTodaysMaxRiskLevel()
+        
+        // Update main risk from text field values
+        self.updateRiskLevel()
+    }
 
-    }
-    
-    // 16/10/2015 - Old
-/*    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [NSObject : AnyObject]) {
-        element = elementName
-        
-        buffer = NSMutableString.alloc()
-        buffer = ""
-        
-        if attributeDict["type"] != nil {
-            if attributeDict["type"] as! NSString == "hourly" {
-                inHourlyTemp = true
-            }
-        }
-        
-        if elementName == "humidity" {
-            inHourlyHumidity = true
-        }
-    } */
-    
-    func parser(parser: NSXMLParser, foundCharacters string: String) {
-        buffer.appendString(string)
-    }
-    
-    func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
-        if elementName == "description" || elementName == "area-description" {
-            self.locationTextField.text = buffer as String
-        }
-        
-        if elementName == "start-valid-time" {
-            times.addObject(buffer)
-        }
-        
-        if elementName == "value" && inHourlyTemp {
-            temperatures.addObject(buffer)
-        }
-        
-        if elementName == "value" && inHourlyHumidity {
-            humidities.addObject(buffer)
-        }
-        
-        if elementName == "temperature" && inHourlyTemp {
-            inHourlyTemp = false
-        }
-        
-        if elementName == "humidity" {
-            inHourlyHumidity = false
-        }
-        
-        // If parsing is complete
-        if elementName == "dwml" {
-            // Set text field temperature and humidity to the first hour in the forecast
-            self.temperatureTextField.text = temperatures[0] as? String
-            self.humidityTextField.text = humidities[0] as? String
-            
-            // Switch temperature and humidity fields to auto-filled styling
-            self.temperatureTextField.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.0)
-            self.humidityTextField.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.0)
-            
-            // Geolocation and parsing are complete
-            self.locationActivityIndicator.stopAnimating()
-            
-            // Update today's max risk from fetched hourly values
-            // N.B. Today's max should be calculated before overall risk level, so that app state styling controlled by overall risk can take it into account
-            self.updateTodaysMaxRiskLevel()
-            
-            // Update main risk from text field values
-            self.updateRiskLevel()
-        }
-    }
-    
     // A function to calculate the heat index from a temperature/humidity combination
     func calculateHeatIndex(tempInF: Double, humidity: Double) -> Double {
         // Heat index calculation applies only to temps >= 80°
@@ -339,15 +236,15 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         // For the next 24 hours, stopping at midnight
         for index in 0...23 {
             // Get a date object for this hour's time
-            let newTime = (times[index] as! NSString).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-            print(" raw time= " + newTime)
+            let newTime = xml["dwml"]["data"]["time-layout"]["start-valid-time"][index].element?.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+
             // Get a clean 12-hour readout of this hour's time
             let newDateFormatter = NSDateFormatter()
             newDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZ"
-            let newDate = newDateFormatter.dateFromString(newTime)
-           // print("new date = " + newDate)
+            let newDate = newDateFormatter.dateFromString(newTime!)
             newDateFormatter.dateFormat = "h:mm a"
             let newHour = newDateFormatter.stringFromDate(newDate!)
+            print(newHour)
             
             // Stop the loop when we hit midnight
             if newHour == "12:00 AM" {
@@ -355,18 +252,15 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
             }
             
             // Calculate the heat index for this hour
-            let newTempDouble = (temperatures[index] as! NSString).doubleValue
-            let newHumidityDouble = (humidities[index] as! NSString).doubleValue
+            let newTempDouble = ((xml["dwml"]["data"]["parameters"]["temperature"][0]["value"][index].element?.text!)! as NSString).doubleValue
+            let newHumidityDouble = ((xml["dwml"]["data"]["parameters"]["humidity"]["value"][index].element?.text!)! as NSString).doubleValue
             let newHeatIndex = calculateHeatIndex(newTempDouble, humidity: newHumidityDouble)
-            
-            // Print out this hour's data
-//            println("Hour \(index): Time: \(newHour) Temp: \(temperatures[index]), Humidity: \(humidities[index])")
             
             // If the heat index exists and is higher than previous ones, mark it as the new high
             if newTempDouble > 80.0 && newHeatIndex > maxHeatIndex {
                 maxIndex = index
                 maxHeatIndex = newHeatIndex
-                maxTime = newTime
+                maxTime = newTime!
             }
         }
         
@@ -418,9 +312,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         }
         
         // Update the interface
-      //  UIView.animateWithDuration(<#T##duration: NSTimeInterval##NSTimeInterval#>, delay: <#T##NSTimeInterval#>, options: <#T##UIViewAnimationOptions#>, animations: <#T##() -> Void#>, completion: <#T##((Bool) -> Void)?##((Bool) -> Void)?##(Bool) -> Void#>)
         let timeInterval:NSTimeInterval = 0.75
-       // let timeDelay:NSTimeInterval = 0.0
         UIView.animateWithDuration(timeInterval, animations: {
             // Make sure today's max container is visible
             self.todaysMaxContainer.alpha = 1
@@ -434,19 +326,6 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
             
         })
         
-        // 20/10/15 - Old
-     /*   UIView.animateWithDuration(timeInterval, delay: timeDelay, options: nil, animations: {
-            // Make sure today's max container is visible
-            self.todaysMaxContainer.alpha = 1
-            
-            // Disable precautions button if minimal risk state
-            if (self.todaysMaxRisk.titleLabel?.text == NSLocalizedString("Minimal Risk From Heat", comment: "Minimal Risk Title")) {
-                self.todaysMaxRisk.enabled = false
-            } else {
-                self.todaysMaxRisk.enabled = true
-            }
-            
-            }, completion: nil) */
     }
     
     // Update the risk state/background color of the app
@@ -565,31 +444,6 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
             self.humidityTextField.textColor = buttonColor
             
         })
-        // 20/10/15 - Old
-       /* UIView.animateWithDuration(0.75, delay: 0.0, options: nil, animations: {
-            
-            // Change background colors
-            self.view.backgroundColor = backgroundColor
-            self.navigationController?.navigationBar.barTintColor = backgroundColor
-            
-            // Change label colors
-            self.temperatureLabel.textColor = labelColor
-            self.humidityLabel.textColor = labelColor
-            self.nowLabel.textColor = labelColor
-            self.feelsLikeNow.textColor = labelColor
-            self.todaysMaxLabel.textColor = labelColor
-            self.todaysMaxTime.textColor = labelColor
-            
-            // Change button colors
-            self.view.tintColor = buttonColor
-            self.navigationController?.navigationBar.tintColor = buttonColor
-            self.navigationController?.navigationBar.barStyle = (buttonColor == UIColor.blackColor() ? UIBarStyle.Default : UIBarStyle.Black)
-            self.locationTextField.textColor = buttonColor
-            self.locationActivityIndicator.color = buttonColor
-            self.temperatureTextField.textColor = buttonColor
-            self.humidityTextField.textColor = buttonColor
-            
-            }, completion: nil)*/
     }
     
     func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
@@ -619,15 +473,32 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
                     let placemark:CLPlacemark = placemarks![0] 
                     
                     // Request and parse NOAA API with current coordinates
-                    self.times = []
-                    self.temperatures = []
-                    self.humidities = []
+                    self.xml = SWXMLHash.parse(NSData(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=\(placemark.location!.coordinate.latitude)&lon=\(placemark.location!.coordinate.longitude)&FcstType=digitalDWML"))!) ?? NSData())
                     
-                    // Use current coordinates to input and parse the NOAA API
-                    self.parser = NSXMLParser(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=\(placemark.location!.coordinate.latitude)&lon=\(placemark.location!.coordinate.longitude)&FcstType=digitalDWML"))!)!
+                    // Because the DWML only has a description tag or an area-description tag, only one of the following will succeed
+                    if (self.xml["dwml"]["data"]["location"]["description"]) {
+                        self.locationTextField.text = self.xml["dwml"]["data"]["location"]["description"].element?.text!
+                    } else if (self.xml["dwml"]["data"]["location"]["area-description"]) {
+                        self.locationTextField.text = self.xml["dwml"]["data"]["location"]["area-description"].element?.text!
+                    }
                     
-                    self.parser.delegate = self
-                    self.parser.parse()
+                    // Set text field temperature and humidity to the first hour in the forecast
+                    self.temperatureTextField.text = self.xml["dwml"]["data"]["parameters"]["temperature"][0]["value"][0].element?.text!
+                    self.humidityTextField.text = self.xml["dwml"]["data"]["parameters"]["humidity"]["value"][0].element?.text!
+                    
+                    // Switch temperature and humidity fields to auto-filled styling
+                    self.temperatureTextField.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.0)
+                    self.humidityTextField.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.0)
+                    
+                    // Geolocation and parsing are complete
+                    self.locationActivityIndicator.stopAnimating()
+                    
+                    // Update today's max risk from fetched hourly values
+                    // N.B. Today's max should be calculated before overall risk level, so that app state styling controlled by overall risk can take it into account
+                    self.updateTodaysMaxRiskLevel()
+                    
+                    // Update main risk from text field values
+                    self.updateRiskLevel()
                 }
             })
         }

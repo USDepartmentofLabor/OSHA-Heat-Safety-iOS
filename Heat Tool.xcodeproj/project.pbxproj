@@ -60,6 +60,7 @@
 		83FDDFE41A66C9470018A068 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83FDDFE21A66C9470018A068 /* LaunchScreen.xib */; };
 		83FDDFF01A66C9470018A068 /* Heat_ToolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FDDFEF1A66C9470018A068 /* Heat_ToolTests.swift */; };
 		83FDDFFA1A66D11C0018A068 /* osha@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 83FDDFF91A66D11C0018A068 /* osha@2x.png */; };
+		D66A3BF81BE27E6B002551B1 /* SWXMLHash.swift in Sources */ = {isa = PBXBuildFile; fileRef = D66A3BF71BE27E6B002551B1 /* SWXMLHash.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -153,6 +154,7 @@
 		83FDDFEE1A66C9470018A068 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		83FDDFEF1A66C9470018A068 /* Heat_ToolTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Heat_ToolTests.swift; sourceTree = "<group>"; };
 		83FDDFF91A66D11C0018A068 /* osha@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "osha@2x.png"; path = "../../osha@2x.png"; sourceTree = "<group>"; };
+		D66A3BF71BE27E6B002551B1 /* SWXMLHash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWXMLHash.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -293,6 +295,7 @@
 				83FDDFDB1A66C9470018A068 /* HeatIndexController.swift */,
 				835E0C141A72F14400F47229 /* MoreInfoController.swift */,
 				8386109D1A93E37D000A1904 /* PrecautionsController.swift */,
+				D66A3BF71BE27E6B002551B1 /* SWXMLHash.swift */,
 				831FF0D11AA284FA00A88F49 /* WebViewController.swift */,
 				83FDDFDD1A66C9470018A068 /* Main.storyboard */,
 				83FDDFE01A66C9470018A068 /* Images.xcassets */,
@@ -383,7 +386,7 @@
 				TargetAttributes = {
 					83FDDFD31A66C9470018A068 = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = FRPCGFXS7Q;
+						DevelopmentTeam = 455CRJK7LC;
 					};
 					83FDDFE81A66C9470018A068 = {
 						CreatedOnToolsVersion = 6.1.1;
@@ -476,6 +479,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				83FDDFDC1A66C9470018A068 /* HeatIndexController.swift in Sources */,
+				D66A3BF81BE27E6B002551B1 /* SWXMLHash.swift in Sources */,
 				83FDDFDA1A66C9470018A068 /* AppDelegate.swift in Sources */,
 				8386109E1A93E37D000A1904 /* PrecautionsController.swift in Sources */,
 				831FF0D21AA284FA00A88F49 /* WebViewController.swift in Sources */,
