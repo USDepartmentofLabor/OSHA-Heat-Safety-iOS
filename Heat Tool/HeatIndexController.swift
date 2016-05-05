@@ -325,7 +325,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
             calculatedHeatIndexF += 8.5282 * pow(10,-4) * tempInF * pow(humidity,2)
             calculatedHeatIndexF -= 1.99 * pow(10,-6) * pow(tempInF, 2) * pow(humidity, 2)
             
-            return calculatedHeatIndexF
+            return round(calculatedHeatIndexF)
         }
     }
     
