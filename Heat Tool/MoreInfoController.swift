@@ -19,11 +19,11 @@ class MoreInfoController: UITableViewController {
     
     // Init each option in the table
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier("infoCell") as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("infoCell")! as UITableViewCell
         
         cell.textLabel!.text = NSLocalizedString(moreInfoItems[indexPath.row], comment: moreInfoItems[indexPath.row] + " Title")
         
-        var imageName = UIImage(named: moreInfoImages[indexPath.row])
+        let imageName = UIImage(named: moreInfoImages[indexPath.row])
         cell.imageView!.layer.masksToBounds = true
         cell.imageView!.layer.cornerRadius = 7.0
         cell.imageView!.image = imageName

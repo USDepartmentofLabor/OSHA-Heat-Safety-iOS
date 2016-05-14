@@ -45,12 +45,12 @@ class PrecautionsController: UIViewController, UIWebViewDelegate {
         // If it's a local link
         if nt == UIWebViewNavigationType.LinkClicked {
             // Get contents of the file to load
-            var fileName = (request.URL?.lastPathComponent? as NSString).stringByDeletingPathExtension
-            var localFilePath = NSBundle.mainBundle().pathForResource(fileName, ofType: "html")
-            var contents = try? NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding)
+            let fileName = ((request.URL?.lastPathComponent)! as NSString).stringByDeletingPathExtension
+            let localFilePath = NSBundle.mainBundle().pathForResource(fileName, ofType: "html")
+            let contents = try? NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding)
             
             // Set the base URL for the web view so we can access resources
-            var baseUrl  = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
+            let baseUrl  = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
             
             // Load contents into the webview
             webView.loadHTMLString(contents as! String, baseURL: baseUrl)

@@ -119,7 +119,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         doneToolbar.barStyle = UIBarStyle.Default
         
         let flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        let done: UIBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Calculate", comment: "Calculate Button"), style: UIBarButtonItemStyle.Done, target: self, action: Selector("doneButtonAction"))
+        let done: UIBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Calculate", comment: "Calculate Button"), style: UIBarButtonItemStyle.Done, target: self, action: #selector(HeatIndexController.doneButtonAction))
         
         let items = NSMutableArray()
         items.addObject(flexSpace)
@@ -232,8 +232,8 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         // If parsing is complete
         if elementName == "dwml" {
             // Set text field temperature and humidity to the first hour in the forecast
-            self.temperatureTextField.text = temperatures[0] as! String
-            self.humidityTextField.text = humidities[0] as! String
+            self.temperatureTextField.text = temperatures[0] as? String
+            self.humidityTextField.text = humidities[0] as? String
             
             // Switch temperature and humidity fields to auto-filled styling
             self.temperatureTextField.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.0)
@@ -381,9 +381,9 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
     
     // Update the risk state/background color of the app
     func updateRiskLevel() {
-        var tempInF = Double(Int(temperatureTextField.text)!)
-        var humidity = Double(Int(humidityTextField.text)!)
-        var perceivedTemperature = calculateHeatIndex(tempInF, humidity: humidity)
+        let tempInF = Double(Int(temperatureTextField.text!)!)
+        let humidity = Double(Int(humidityTextField.text!)!)
+        let perceivedTemperature = calculateHeatIndex(tempInF, humidity: humidity)
         
         var riskTitleString = ""
         
