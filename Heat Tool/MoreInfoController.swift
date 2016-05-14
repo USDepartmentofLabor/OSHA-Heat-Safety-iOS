@@ -39,7 +39,7 @@ class MoreInfoController: UITableViewController {
     // Load content for the selected web view
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "webViewSegue" {
-            if let indexPath = tableView.indexPathForSelectedRow() {
+            if let indexPath = tableView.indexPathForSelectedRow {
                 let destinationViewController = segue.destinationViewController as! WebViewController
                 destinationViewController.infoContent = moreInfoItems[indexPath.row]
             }
