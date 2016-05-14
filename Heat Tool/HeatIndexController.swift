@@ -187,7 +187,6 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
     func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
         element = elementName
         
-        buffer = NSMutableString.alloc()
         buffer = ""
         
         if attributeDict["type"] != nil {
