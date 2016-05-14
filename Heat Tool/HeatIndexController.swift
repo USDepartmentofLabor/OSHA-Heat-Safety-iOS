@@ -40,12 +40,15 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
     
     // Create globals for parser functions
     var parser = NSXMLParser()
-    var times = NSMutableArray()
-    var temperatures = NSMutableArray()
-    var humidities = NSMutableArray()
+    var times = [String]()
+    var temperatures = [String]()
+    var humidities = [String]()
     var elements = NSMutableDictionary()
-    var element = NSString()
-    var buffer = NSMutableString()
+    
+    // What does this do? It's not really used in here
+    var element = ""
+    
+    var buffer = ""
     var inHourlyTemp = false
     var inHourlyHumidity = false
     
@@ -121,28 +124,24 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         let flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
         let done: UIBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Calculate", comment: "Calculate Button"), style: UIBarButtonItemStyle.Done, target: self, action: #selector(HeatIndexController.doneButtonAction))
         
-        let items = NSMutableArray()
-        items.addObject(flexSpace)
-        items.addObject(done)
-        
-        doneToolbar.items = items as [AnyObject] as [AnyObject]
+        doneToolbar.items = [flexSpace, done]
         doneToolbar.sizeToFit()
         
-        self.temperatureTextField.inputAccessoryView = doneToolbar
-        self.humidityTextField.inputAccessoryView = doneToolbar
+        temperatureTextField.inputAccessoryView = doneToolbar
+        humidityTextField.inputAccessoryView = doneToolbar
         
         // Set up text input field handlers
-        self.temperatureTextField.delegate = self
-        self.humidityTextField.delegate = self
-        self.locationTextField.delegate = self
+        temperatureTextField.delegate = self
+        humidityTextField.delegate = self
+        locationTextField.delegate = self
         
         // Center button text
-        self.riskButtonNow.titleLabel?.textAlignment = .Center
-        self.todaysMaxRisk.titleLabel?.textAlignment = .Center
+        riskButtonNow.titleLabel?.textAlignment = .Center
+        todaysMaxRisk.titleLabel?.textAlignment = .Center
         
         // Set button images so they always respect tint color
-        self.riskButtonNow.setImage(UIImage(named:"chevron")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        self.todaysMaxRisk.setImage(UIImage(named:"chevron")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        riskButtonNow.setImage(UIImage(named:"chevron")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        todaysMaxRisk.setImage(UIImage(named:"chevron")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         
         // Set up location manager for getting our location
         locManager = CLLocationManager()
@@ -175,7 +174,18 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         humidities = []
         
         // Use current coordinates to input and parse the NOAA API
-        parser = NSXMLParser(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=\(locations[locations.count-1].coordinate.latitude)&lon=\(locations[locations.count-1].coordinate.longitude)&FcstType=digitalDWML"))!)!
+        let coordinate = locations[locations.count-1].coordinate
+        let lat = coordinate.latitude
+        let long = coordinate.longitude
+        
+        // There isn't a HTTPS version of this URL I could find,
+        // and so we need to disable ATS 
+        // See: http://useyourloaf.com/blog/app-transport-security/
+        let noaaURL =  "http://forecast.weather.gov/MapClick.php?lat=\(lat)&lon=\(long)&FcstType=digitalDWML"
+        let url = NSURL(string: noaaURL)!
+
+        // This could a blocking operation, maybe look into using grand central dispatch?
+        parser = NSXMLParser(contentsOfURL: url)!
         
         // South Texas, for some nice testing
 //        parser = NSXMLParser(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=25.902470&lon=-97.418151&FcstType=digitalDWML")))!
@@ -186,22 +196,19 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
     
     func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
         element = elementName
-        
         buffer = ""
         
-        if attributeDict["type"] != nil {
-            if attributeDict["type"] as! NSString == "hourly" {
-                inHourlyTemp = true
-            }
+        if let type = attributeDict["type"] as String? {
+            inHourlyTemp = (type ?? "") == "hourly"
         }
-        
+
         if elementName == "humidity" {
             inHourlyHumidity = true
         }
     }
     
-    func parser(parser: NSXMLParser, foundCharacters string: String?) {
-        buffer.appendString(string!)
+    func parser(parser: NSXMLParser, foundCharacters string: String) {
+        buffer.appendContentsOf(string)
     }
     
     func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
@@ -210,15 +217,15 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         }
         
         if elementName == "start-valid-time" {
-            times.addObject(buffer)
+            times.append(buffer)
         }
         
         if elementName == "value" && inHourlyTemp {
-            temperatures.addObject(buffer)
+            temperatures.append(buffer)
         }
         
         if elementName == "value" && inHourlyHumidity {
-            humidities.addObject(buffer)
+            humidities.append(buffer)
         }
         
         if elementName == "temperature" && inHourlyTemp {
@@ -232,22 +239,22 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         // If parsing is complete
         if elementName == "dwml" {
             // Set text field temperature and humidity to the first hour in the forecast
-            self.temperatureTextField.text = temperatures[0] as? String
-            self.humidityTextField.text = humidities[0] as? String
+            temperatureTextField.text = temperatures.first
+            humidityTextField.text = humidities.first
             
             // Switch temperature and humidity fields to auto-filled styling
-            self.temperatureTextField.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.0)
-            self.humidityTextField.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.0)
+            temperatureTextField.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.0)
+            humidityTextField.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.0)
             
             // Geolocation and parsing are complete
-            self.locationActivityIndicator.stopAnimating()
+            locationActivityIndicator.stopAnimating()
             
             // Update today's max risk from fetched hourly values
             // N.B. Today's max should be calculated before overall risk level, so that app state styling controlled by overall risk can take it into account
-            self.updateTodaysMaxRiskLevel()
+            updateTodaysMaxRiskLevel()
             
             // Update main risk from text field values
-            self.updateRiskLevel()
+            updateRiskLevel()
         }
     }
     
@@ -283,7 +290,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         // For the next 24 hours, stopping at midnight
         for index in 0...23 {
             // Get a date object for this hour's time
-            let newTime = (times[index] as! NSString).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+            let newTime = times[index].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
             
             // Get a clean 12-hour readout of this hour's time
             let newDateFormatter = NSDateFormatter()
@@ -298,8 +305,9 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
             }
             
             // Calculate the heat index for this hour
-            let newTempDouble = (temperatures[index] as! NSString).doubleValue
-            let newHumidityDouble = (humidities[index] as! NSString).doubleValue
+            let newTempDouble = Double(temperatures[index]) ?? 0
+            let newHumidityDouble = Double(humidities[index]) ?? 0
+            
             let newHeatIndex = calculateHeatIndex(newTempDouble, humidity: newHumidityDouble)
             
             // Print out this hour's data
