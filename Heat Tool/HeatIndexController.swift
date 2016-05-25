@@ -51,6 +51,9 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
     var inHourlyTemp = false
     var inHourlyHumidity = false
     
+    // Create global for troubleshooting XML parsing
+    var trashData = NSMutableArray()
+    
     // Create a global to keep track of risk state/background color
     var riskLevel = 0;
     
@@ -121,7 +124,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         doneToolbar.barStyle = UIBarStyle.Default
         
         let flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        let done: UIBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Calculate", comment: "Calculate Button"), style: UIBarButtonItemStyle.Done, target: self, action: Selector("doneButtonAction"))
+        let done: UIBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Calculate", comment: "Calculate Button"), style: UIBarButtonItemStyle.Done, target: self, action: #selector(HeatIndexController.doneButtonAction))
         
         doneToolbar.items = NSArray(objects: flexSpace, done) as? [UIBarButtonItem]
         doneToolbar.sizeToFit()
@@ -133,7 +136,7 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         let locationToolbar: UIToolbar = UIToolbar()
         locationToolbar.barStyle = UIBarStyle.Default
         
-        let useMyLocation: UIBarButtonItem = UIBarButtonItem(title: "Use My Location", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("beginGeolocation"))
+        let useMyLocation: UIBarButtonItem = UIBarButtonItem(title: "Use My Location", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(HeatIndexController.beginGeolocation))
         
         locationToolbar.items = NSArray(objects: useMyLocation) as? [UIBarButtonItem]
         locationToolbar.sizeToFit()
@@ -189,7 +192,6 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         
         // Use current coordinates to input and parse the NOAA API
         parser = NSXMLParser(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=\(locations[locations.count-1].coordinate.latitude)&lon=\(locations[locations.count-1].coordinate.longitude)&FcstType=digitalDWML"))!)!
-        
         // South Texas, for some nice testing
         //        parser = NSXMLParser(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=25.902470&lon=-97.418151&FcstType=digitalDWML")))!
         
@@ -257,24 +259,43 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
     } */
     
     func parser(parser: NSXMLParser, foundCharacters string: String) {
-        buffer.appendString(string)
+        //buffer.appendString(string)
+        buffer.setString(string)
     }
     
     func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+        
+       /*if elementName == "creation-date" || elementName == "production-center" {
+           // trashData.addObject(buffer)
+           // print ("trashData = " + (buffer as String))
+            print("junk = " + (buffer as String))
+        }*/
+        
         if elementName == "description" || elementName == "area-description" {
-            self.locationTextField.text = buffer as String
+            var locationDescription = buffer as String
+            let locationDescriptionComma = locationDescription.endIndex.advancedBy(-4)
+            if locationDescription[locationDescriptionComma] == "," {
+                locationDescription = locationDescription.substringToIndex(locationDescription.endIndex.advancedBy(-4))
+            }
+            self.locationTextField.text = locationDescription
+            //self.locationTextField.text = buffer as String
+            
+            print(self.locationTextField.text)
         }
         
-        if elementName == "start-valid-time" {
-            times.addObject(buffer)
+       if elementName == "start-valid-time" {
+            times.addObject((buffer as String))
+            //print ("Added time to the buffer")
+            //print((buffer as String))
         }
         
         if elementName == "value" && inHourlyTemp {
-            temperatures.addObject(buffer)
+            temperatures.addObject((buffer as String))
         }
         
         if elementName == "value" && inHourlyHumidity {
-            humidities.addObject(buffer)
+            humidities.addObject((buffer as String))
+            //print ("Added humidty to the buffer")
         }
         
         if elementName == "temperature" && inHourlyTemp {
@@ -308,12 +329,18 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
     }
     
     // A function to calculate the heat index from a temperature/humidity combination
-    func calculateHeatIndex(tempInF: Double, humidity: Double) -> Double {
-        // Heat index calculation applies only to temps >= 80°
-        if tempInF < 80.0 {
+    func calculateHeatIndex(tempInF: Double, humidity: Double) -> Int {
+        // See http://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml for the methodology used below
+        
+        let simpleCalculation = 0.5 * (tempInF + 61.0 + ((tempInF - 68.0) * 1.2) + (humidity * 0.094))
+        let simpleCalculationAverage = (simpleCalculation + tempInF) / 2
+        
+        /*if tempInF < 80.0 {
             return tempInF
-        } else {
-            var calculatedHeatIndexF = 0.0
+        } else { */
+
+        var calculatedHeatIndexF = simpleCalculationAverage
+        if simpleCalculationAverage > 80.0 {
             
             // Broke the formula up in pieces since its orginal incarnation was causing problems with Xcode
             calculatedHeatIndexF = -42.379 + (2.04901523 * tempInF)
@@ -325,8 +352,19 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
             calculatedHeatIndexF += 8.5282 * pow(10,-4) * tempInF * pow(humidity,2)
             calculatedHeatIndexF -= 1.99 * pow(10,-6) * pow(tempInF, 2) * pow(humidity, 2)
             
-            return round(calculatedHeatIndexF)
         }
+
+        // If the RH is less than 13% and the temperature is between 80 and 112 degrees F, then the following adjustment is subtracted from HI:
+        if humidity < 13.0 && (tempInF >= 80.0 && tempInF <= 112.0) {
+            calculatedHeatIndexF -= ((13 - humidity) / 4) * sqrt((17 - abs(tempInF - 95.0)) / 17)
+        }
+        
+        // On the other hand, if the RH is greater than 85% and the temperature is between 80 and 87 degrees F, then the following adjustment is added to HI:
+        if humidity > 85.0 && (tempInF >= 80.0 && tempInF <= 87) {
+            calculatedHeatIndexF += ((humidity - 85) / 10) * ((87 - tempInF) / 5)
+        }
+        
+        return Int(round(calculatedHeatIndexF))
     }
     
     // Update the "today's max" risk
@@ -334,39 +372,53 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
         // Look for the maximum for the rest of the day
         var maxIndex = -1
         var maxTime:String = ""
-        var maxHeatIndex = -1000.0
+        var maxHeatIndex = -1000
+        
+        //print ("times = " + times)
         
         // For the next 24 hours, stopping at midnight
         for index in 0...23 {
             // Get a date object for this hour's time
             let newTime = (times[index] as! NSString).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-            print(" raw time= " + newTime)
+            //print(" raw time= " + newTime)
             // Get a clean 12-hour readout of this hour's time
             let newDateFormatter = NSDateFormatter()
             newDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZ"
             let newDate = newDateFormatter.dateFromString(newTime)
-           // print("new date = " + newDate)
-            newDateFormatter.dateFormat = "h:mm a"
-            let newHour = newDateFormatter.stringFromDate(newDate!)
             
-            // Stop the loop when we hit midnight
-            if newHour == "12:00 AM" {
-                break
-            }
+            /*print("raw time = " + (times[index] as! String))
+            print("newDateFormatter.dateFormat = " + newDateFormatter.dateFormat)
+            print("new date = " + newTime)*/
             
-            // Calculate the heat index for this hour
-            let newTempDouble = (temperatures[index] as! NSString).doubleValue
-            let newHumidityDouble = (humidities[index] as! NSString).doubleValue
-            let newHeatIndex = calculateHeatIndex(newTempDouble, humidity: newHumidityDouble)
-            
-            // Print out this hour's data
-//            println("Hour \(index): Time: \(newHour) Temp: \(temperatures[index]), Humidity: \(humidities[index])")
-            
-            // If the heat index exists and is higher than previous ones, mark it as the new high
-            if newTempDouble > 80.0 && newHeatIndex > maxHeatIndex {
-                maxIndex = index
-                maxHeatIndex = newHeatIndex
-                maxTime = newTime
+            newDateFormatter.dateFormat = "HH:mm a"
+            // **ERROR** Code below indicates either newDateDate or newDateFormatter is nil
+            // Added not nil condition
+            if ((newDate) != nil) {
+                //print ("new date!  Time = " + newTime)
+                let newHour = newDateFormatter.stringFromDate(newDate!)
+                //print (" new hour=" + newHour)
+                // Stop the loop when we hit midnight
+                //if newHour == "12:00 AM" {
+                if newHour == "00:00" {
+                    break
+                }
+                
+                // Calculate the heat index for this hour
+                let newTempDouble = (temperatures[index] as! NSString).doubleValue
+                let newHumidityDouble = (humidities[index] as! NSString).doubleValue
+                let newHeatIndex = calculateHeatIndex(newTempDouble, humidity: newHumidityDouble)
+                
+                // Print out this hour's data
+                            print("Hour \(index): Time: \(newHour) Temp: \(temperatures[index]), Humidity: \(humidities[index])")
+                
+                // If the heat index exists and is higher than previous ones, mark it as the new high
+                if newTempDouble > 80 && newHeatIndex > maxHeatIndex {
+                    maxIndex = index
+                    maxHeatIndex = newHeatIndex
+                    maxTime = newTime
+                }
+            } else {
+                print ("NewDate is nil")
             }
         }
         
@@ -451,8 +503,16 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
     
     // Update the risk state/background color of the app
     func updateRiskLevel() {
-        let tempInF = Double(Int(temperatureTextField.text!)!)
-        let humidity = Double(Int(humidityTextField.text!)!)
+
+        //  The below two lines were giving us the "fatal error: unexpectedly found nil while unwrapping an Optional value" error.  Using safer, even if more verbose code.
+//        let tempInF : Double? = Double(Int(temperatureTextField.text!)!)
+  //      let humidity : Double? = Double(Int(humidityTextField.text!)!)
+        let tempInFString = temperatureTextField.text ?? "79"
+        let tempInFInt = Int(tempInFString) ?? 79
+        let tempInF = Double(tempInFInt)
+        let humidityString = humidityTextField.text ?? "0"
+        let humidityInt = Int(humidityString) ?? 0
+        let humidity = Double(humidityInt)
         let perceivedTemperature = calculateHeatIndex(tempInF, humidity: humidity)
         
         var riskTitleString = ""
@@ -622,7 +682,8 @@ class HeatIndexController: GAITrackedViewController, CLLocationManagerDelegate, 
                     self.times = []
                     self.temperatures = []
                     self.humidities = []
-                    
+                    //print ("URL called = " + "http://forecast.weather.gov/MapClick.php?lat=\(placemark.location!.coordinate.latitude)&lon=\(placemark.location!.coordinate.longitude)&FcstType=digitalDWML")
+
                     // Use current coordinates to input and parse the NOAA API
                     self.parser = NSXMLParser(contentsOfURL: (NSURL(string: "http://forecast.weather.gov/MapClick.php?lat=\(placemark.location!.coordinate.latitude)&lon=\(placemark.location!.coordinate.longitude)&FcstType=digitalDWML"))!)!
                     
