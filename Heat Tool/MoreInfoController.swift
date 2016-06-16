@@ -44,7 +44,7 @@ class MoreInfoController: UITableViewController {
         super.viewWillAppear(animated)
         
         // Make sure the ugly table cell selection is cleared when returning to this view
-        if (self.tableView.indexPathForSelectedRow! != nil) {
+        if (self.tableView.indexPathForSelectedRow != nil) {
             self.tableView.deselectRowAtIndexPath(self.tableView.indexPathForSelectedRow!, animated: false)
         }
     }
