@@ -384,9 +384,11 @@
 					83FDDFD31A66C9470018A068 = {
 						CreatedOnToolsVersion = 6.1.1;
 						DevelopmentTeam = FRPCGFXS7Q;
+						LastSwiftMigration = 0810;
 					};
 					83FDDFE81A66C9470018A068 = {
 						CreatedOnToolsVersion = 6.1.1;
+						LastSwiftMigration = 0810;
 						TestTargetID = 83FDDFD31A66C9470018A068;
 					};
 				};
@@ -730,6 +732,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Heat Tool-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -751,6 +754,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Heat Tool-Bridging-Header.h";
+				SWIFT_VERSION = 2.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -770,6 +774,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "gov.osha.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Heat Tool.app/Heat Tool";
 			};
 			name = Debug;
@@ -785,6 +790,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "gov.osha.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Heat Tool.app/Heat Tool";
 			};
 			name = Release;
