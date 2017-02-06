@@ -55,13 +55,21 @@ class PrecautionsController: GAITrackedViewController, UIWebViewDelegate {
         if nt == UIWebViewNavigationType.LinkClicked {
             // Get contents of the file to load
             // 21/10/15 - Old
-//            let fileName = fileURL.lastPathComponent!.stringByDeletingPathExtension
-            let fileName = request.URL!.URLByDeletingPathExtension
-            let fileURL = fileName?.absoluteString
+            // let fileName = fileURL.lastPathComponent!.stringByDeletingPathExtension
+            
+            //Gino: Broken method to form fileName
+            //let fileName = request.URL!.URLByDeletingPathExtension
+            
+            //Gino: Corrected method to form fileName
+            let fileName = request.URL!.URLByDeletingPathExtension?.lastPathComponent
+            
+            //Gino: fileName no longer needs to be converted to a string. Passing value to fileURL for consistency
+            //let fileURL = fileName?.absoluteString
+            let fileURL = fileName
             
             let localFilePath = NSBundle.mainBundle().pathForResource(fileURL, ofType: "html")
 
-//            var contents = NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding, error: nil)
+            // var contents = NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding, error: nil)
             do {
                 let contents = try NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding)
                 // Set the base URL for the web view so we can access resources
@@ -79,6 +87,15 @@ class PrecautionsController: GAITrackedViewController, UIWebViewDelegate {
         return true
     }
 
+    /*
+    // GINO (Jan 25, 2017): - webView
+     
+     Commit published by antonyakushin [ Updated to recommended settings for Swift 2.3 and Xcode 8.1 ] on Nov 8, 2016 
+     unfortunately introduced an issue that prevented the correct fileName from being formed. Changes noted above are
+     to correct the problem. This bug prevented local link functionality from precautions pages.
+
+    */
+    
     /*
     // MARK: - Navigation
 

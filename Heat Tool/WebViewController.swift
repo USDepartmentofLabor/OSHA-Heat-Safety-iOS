@@ -45,12 +45,44 @@ class WebViewController: GAITrackedViewController, UIWebViewDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+    func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {
         // If it's a web link
         if request.URL!.scheme == "http" {
             UIApplication.sharedApplication().openURL(request.URL!)
             return false
         }
+        
+        //-------------------------------------------------------------------------------------------
+        //Gino: Block added to handle links clicked when navigating from inner pages of More Info beyond
+        //the first screen.
+        
+        // If it's a local html page link that was clicked
+        if nt == UIWebViewNavigationType.LinkClicked {
+        
+           // Set the base URL for the web view so we can access resources
+           let baseURL2 = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
+            
+           // Set file name of target clicked link
+           let fileName = request.URL!.URLByDeletingPathExtension?.lastPathComponent
+            
+           // Set local file to be loaded into webView
+           let htmlFile = NSBundle.mainBundle().pathForResource(fileName, ofType: "html")
+        
+            do {
+                // Set contents to local html content
+                let contents = try String(contentsOfFile: htmlFile!, encoding: NSUTF8StringEncoding)
+                
+                // Load contents into the webview
+                webView.loadHTMLString(contents as String , baseURL: baseURL2)
+                
+            } catch {
+                print(error)
+            }
+            return false
+            
+        }
+        //-------------------------------------------------------------------------------------------
+        
         
         // If it's the initial load
         return true
