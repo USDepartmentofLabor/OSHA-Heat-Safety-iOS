@@ -18,17 +18,17 @@ class MoreInfoController: UITableViewController {
         
         // Record GA view
         let tracker = GAI.sharedInstance().defaultTracker
-        tracker.set(kGAIScreenName, value: "More Info Screen")
-        tracker.send(GAIDictionaryBuilder.createAppView().build() as [NSObject : AnyObject])
+        tracker?.set(kGAIScreenName, value: "More Info Screen")
+        tracker?.send(GAIDictionaryBuilder.createAppView().build() as! [AnyHashable: Any])
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return moreInfoItems.count
     }
     
     // Init each option in the table
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("infoCell")! 
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "infoCell")! 
         
         cell.textLabel!.text = NSLocalizedString(moreInfoItems[indexPath.row], comment: moreInfoItems[indexPath.row] + " Title")
         
@@ -40,24 +40,24 @@ class MoreInfoController: UITableViewController {
         return cell
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         // Make sure the ugly table cell selection is cleared when returning to this view
         if (self.tableView.indexPathForSelectedRow != nil) {
-            self.tableView.deselectRowAtIndexPath(self.tableView.indexPathForSelectedRow!, animated: false)
+            self.tableView.deselectRow(at: self.tableView.indexPathForSelectedRow!, animated: false)
         }
     }
     
     // Allow more info view to be closed
-    @IBAction func dismissMoreInfo(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+    @IBAction func dismissMoreInfo(_ sender: AnyObject) {
+        self.dismiss(animated: true, completion: nil)
     }
     
     // Load content for the selected web view
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "webViewSegue" {
-            let destinationViewController = segue.destinationViewController as! WebViewController
+            let destinationViewController = segue.destination as! WebViewController
             destinationViewController.infoContent = moreInfoItems[tableView.indexPathForSelectedRow!.row]
         }
     }

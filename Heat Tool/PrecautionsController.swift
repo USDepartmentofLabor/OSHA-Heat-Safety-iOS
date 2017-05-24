@@ -23,12 +23,12 @@ class PrecautionsController: GAITrackedViewController, UIWebViewDelegate {
         webView.delegate = self
         
         // Get the contents of the file to load
-        let localFilePath = NSBundle.mainBundle().pathForResource(precautionLevel, ofType: "html")
+        let localFilePath = Bundle.main.path(forResource: precautionLevel, ofType: "html")
         do {
-            let contents =  try NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding)
+            let contents =  try NSString(contentsOfFile: localFilePath!, encoding: String.Encoding.utf8.rawValue)
    
             // Get the base URL of the file so we can access its resources
-            let baseUrl = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
+            let baseUrl = URL(fileURLWithPath: Bundle.main.bundlePath)
             
             // Load contents into the webview
             webView.loadHTMLString(contents as String, baseURL: baseUrl)
@@ -44,15 +44,15 @@ class PrecautionsController: GAITrackedViewController, UIWebViewDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {
+    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {
         // If it's a web link
-        if request.URL!.scheme == "http" || request.URL!.scheme == "https" {
-            UIApplication.sharedApplication().openURL(request.URL!)
+        if request.url!.scheme == "http" || request.url!.scheme == "https" {
+            UIApplication.shared.openURL(request.url!)
             return false
         }
         
         // If it's a local link
-        if nt == UIWebViewNavigationType.LinkClicked {
+        if nt == UIWebViewNavigationType.linkClicked {
             // Get contents of the file to load
             // 21/10/15 - Old
             // let fileName = fileURL.lastPathComponent!.stringByDeletingPathExtension
@@ -61,19 +61,19 @@ class PrecautionsController: GAITrackedViewController, UIWebViewDelegate {
             //let fileName = request.URL!.URLByDeletingPathExtension
             
             //Gino: Corrected method to form fileName
-            let fileName = request.URL!.URLByDeletingPathExtension?.lastPathComponent
+            let fileName = (request as NSURLRequest).url!.deletingPathExtension().lastPathComponent
             
             //Gino: fileName no longer needs to be converted to a string. Passing value to fileURL for consistency
             //let fileURL = fileName?.absoluteString
             let fileURL = fileName
             
-            let localFilePath = NSBundle.mainBundle().pathForResource(fileURL, ofType: "html")
+            let localFilePath = Bundle.main.path(forResource: fileURL, ofType: "html")
 
             // var contents = NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding, error: nil)
             do {
-                let contents = try NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding)
+                let contents = try NSString(contentsOfFile: localFilePath!, encoding: String.Encoding.utf8.rawValue)
                 // Set the base URL for the web view so we can access resources
-                let baseUrl  = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
+                let baseUrl  = URL(fileURLWithPath: Bundle.main.bundlePath)
             
                 // Load contents into the webview
                 webView.loadHTMLString(contents as String, baseURL: baseUrl)
