@@ -26,12 +26,12 @@ class WebViewController: GAITrackedViewController, UIWebViewDelegate {
         self.title = NSLocalizedString(infoContent, comment: infoContent + " Title")
         
         // Get the contents of the file to load
-        let localFilePath = NSBundle.mainBundle().pathForResource(infoContent, ofType: "html")
+        let localFilePath = Bundle.main.path(forResource: infoContent, ofType: "html")
         do {
-        let contents = try NSString(contentsOfFile: localFilePath!, encoding: NSUTF8StringEncoding)
+        let contents = try NSString(contentsOfFile: localFilePath!, encoding: String.Encoding.utf8.rawValue)
         
         // Get the base URL of the file so we can access its resources
-        let baseUrl = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
+        let baseUrl = URL(fileURLWithPath: Bundle.main.bundlePath)
         
         // Load contents into the webview
         webView.loadHTMLString(contents as String, baseURL: baseUrl)
@@ -45,10 +45,10 @@ class WebViewController: GAITrackedViewController, UIWebViewDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {
+    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {
         // If it's a web link
-        if request.URL!.scheme == "http" || request.URL!.scheme == "https" {
-            UIApplication.sharedApplication().openURL(request.URL!)
+        if request.url!.scheme == "http" || request.url!.scheme == "https" {
+            UIApplication.shared.openURL(request.url!)
             return false
         }
         
@@ -57,20 +57,20 @@ class WebViewController: GAITrackedViewController, UIWebViewDelegate {
         //the first screen.
         
         // If it's a local html page link that was clicked
-        if nt == UIWebViewNavigationType.LinkClicked {
+        if nt == UIWebViewNavigationType.linkClicked {
         
            // Set the base URL for the web view so we can access resources
-           let baseURL2 = NSURL.fileURLWithPath(NSBundle.mainBundle().bundlePath)
+           let baseURL2 = URL(fileURLWithPath: Bundle.main.bundlePath)
             
            // Set file name of target clicked link
-           let fileName = request.URL!.URLByDeletingPathExtension?.lastPathComponent
+           let fileName = (request as NSURLRequest).url!.deletingPathExtension().lastPathComponent
             
            // Set local file to be loaded into webView
-           let htmlFile = NSBundle.mainBundle().pathForResource(fileName, ofType: "html")
+           let htmlFile = Bundle.main.path(forResource: fileName, ofType: "html")
         
             do {
                 // Set contents to local html content
-                let contents = try String(contentsOfFile: htmlFile!, encoding: NSUTF8StringEncoding)
+                let contents = try String(contentsOfFile: htmlFile!, encoding: String.Encoding.utf8)
                 
                 // Load contents into the webview
                 webView.loadHTMLString(contents as String , baseURL: baseURL2)
