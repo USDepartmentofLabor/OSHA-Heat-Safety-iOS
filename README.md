@@ -1,4 +1,4 @@
-# Heat-Tool
+# Heat-Tool - An Amazing Project
 Rebuild and redesign of the OSHA Heat Safety Tool in Swift.
 
 ## Analytics
