@@ -1,3 +1,4 @@
+# Improved Docs
 # Heat-Tool
 Rebuild and redesign of the OSHA Heat Safety Tool in Swift.
 
